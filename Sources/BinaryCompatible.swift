@@ -96,6 +96,17 @@ extension UInt32: BinaryCompatible {
     }
 }
 
+extension Int8: BinaryCompatible {
+    static public func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> Int8 {
+        return Int8(bitPattern: try stream.read())
+    }
+    
+    // TODO: untested
+    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+        return [UInt8(bitPattern: self)]
+    }
+}
+
 extension Int16: BinaryCompatible {
     static public func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> Int16 {
         var buffer = try stream.readBytes(length: 2)
@@ -128,3 +139,41 @@ extension Int16: BinaryCompatible {
         }
     }
 }
+
+extension Int32: BinaryCompatible {
+    static public func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> Int32 {
+        var buffer = try stream.readBytes(length: 4)
+        let value = withUnsafePointer(to: &buffer[0]) {
+            $0.withMemoryRebound(to: Int32.self, capacity: 1) {
+                $0[0]
+            }
+        }
+        switch byteOrder ?? defaultByteOrder {
+        case .little:
+            return Int32(littleEndian: value)
+        case .big:
+            return Int32(bigEndian: value)
+        }
+    }
+    
+    // TODO: untested
+    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+        switch byteOrder ?? defaultByteOrder {
+        case .little:
+            return [
+                UInt8(self >> 0 & 0xff),
+                UInt8(self >> 8 & 0xff),
+                UInt8(self >> 16 & 0xff),
+                UInt8(self >> 24 & 0xff)
+            ]
+        case .big:
+            return [
+                UInt8(self >> 24 & 0xff),
+                UInt8(self >> 16 & 0xff),
+                UInt8(self >> 8 & 0xff),
+                UInt8(self >> 0 & 0xff)
+            ]
+        }
+    }
+}
+

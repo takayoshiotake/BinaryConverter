@@ -29,6 +29,21 @@ BinaryConverter.convert(array: [0x80, 0x00], byteOrder: .little) as Int16 // 128
 BinaryConverter.convert(array: [0x80, 0x00], byteOrder: .big) as Int16 // -32768
 ```
 
+- Converting 8 bytes byte array into [CChar]
+
+```
+BinaryConverter.convert(array: [0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00], count: 8) as [CChar]
+let str = withUnsafePointer(to: &result[0]) { String(cString: $0) } // "ASCII"
+```
+
+- Converting `[UInt8]` with layout information
+
+```
+// id: UInt8, asciiz: [CChar](count: 8)
+let array = [0x01, 0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00] as [UInt8]
+let values = try! BinaryConverter.convert(array: array, layout: [("id", BinaryType(UInt8.self), nil), ("value", BinaryType(CChar.self, count: 8), nil)]) // ["id": 1, "value": [65, 83, 67, 73, 73, 0, 0, 0]]
+```
+
 - Converting `Int16` into `[UInt8]`
 
 ```swift
@@ -44,6 +59,9 @@ I am adopting `BinaryCompatible` protocol to following types:
 - UInt8
 - UInt16
 - UInt32
+- Int8
 - Int16
+- Int32
+- CChar
 
 I will support other types gradually.
