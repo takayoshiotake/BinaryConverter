@@ -33,25 +33,25 @@ public enum BinaryType {
 public let defaultByteOrder = ByteOrder.little
 
 public class BinaryStream {
-    public let buffer: ArraySlice<UInt8>
+    public let binary: ArraySlice<UInt8>
     public var currentIndex: Int
     
-    public init(arraySlice: ArraySlice<UInt8>) {
-        buffer = arraySlice
-        currentIndex = buffer.startIndex
+    public init(_ binary: ArraySlice<UInt8>) {
+        self.binary = binary
+        currentIndex = binary.startIndex
     }
     
-    public init(array: Array<UInt8>, startIndex: Int) {
+    public init(_ binary: Array<UInt8>, startIndex: Int) {
         assert(startIndex >= 0)
-        assert(startIndex < array.count)
-        buffer = array[startIndex..<array.count]
-        currentIndex = buffer.startIndex
+        assert(startIndex < binary.count)
+        self.binary = binary[startIndex..<binary.count]
+        currentIndex = binary.startIndex
     }
     
     
     public var available: Int {
         get {
-            return buffer.endIndex - currentIndex
+            return binary.endIndex - currentIndex
         }
     }
     
@@ -60,7 +60,7 @@ public class BinaryStream {
         guard available >= 1 else {
             throw BinaryConverterError.streamIsShort
         }
-        let value = buffer[currentIndex]
+        let value = binary[currentIndex]
         currentIndex += 1
         return value
     }
@@ -70,14 +70,14 @@ public class BinaryStream {
         guard available >= length else {
             throw BinaryConverterError.streamIsShort
         }
-        let value = [UInt8](buffer[currentIndex..<currentIndex + length])
+        let value = [UInt8](binary[currentIndex..<currentIndex + length])
         currentIndex += length
         return value
     }
     
     // mutating
     public func moveIndex(to index: Int) {
-        currentIndex = buffer.startIndex + index
+        currentIndex = binary.startIndex + index
     }
     
     // mutating
@@ -87,19 +87,19 @@ public class BinaryStream {
     
     // nonmutating read
     public subscript(index: Int) -> UInt8 {
-        return buffer[currentIndex + index]
+        return binary[currentIndex + index]
     }
 
     // nonmutating readBytes (1)
     public subscript(range: Range<Int>) -> ArraySlice<UInt8> {
         let currentBaseRange = currentIndex+range.lowerBound..<currentIndex+range.upperBound
-        return buffer[currentBaseRange]
+        return binary[currentBaseRange]
     }
 
     // nonmutating readBytes (2)
     public subscript(range: ClosedRange<Int>) -> ArraySlice<UInt8> {
         let currentBaseRange = currentIndex+range.lowerBound...currentIndex+range.upperBound
-        return buffer[currentBaseRange]
+        return binary[currentBaseRange]
     }
     
 }
@@ -116,66 +116,45 @@ public class BinaryConverter {
     
     // MARK: - Converting `[UInt8]` into `BinaryCompatible` value(s)
     
-    /// Converts the `[UInt8]` into `T`, by reading the `array`.
-    ///
-    /// - parameter array: this is containing the converting value
-    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
-    /// - returns: the value converted
-    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the array
-    public class func convert<T: BinaryCompatible>(array: Array<UInt8>, byteOrder: ByteOrder? = nil) throws -> T {
-        return try convert(stream: BinaryStream(array: array, startIndex: 0), byteOrder: byteOrder)
+    /// Converts the `[UInt8]` into `T`, by reading the `binary`.
+    public class func convert<T: BinaryCompatible>(binary array: Array<UInt8>, byteOrder: ByteOrder? = nil) throws -> T {
+        return try convert(binary: BinaryStream(array, startIndex: 0), byteOrder: byteOrder)
     }
     
-    /// Converts the `[UInt8]` into `T`, by reading the `arraySlice`.
-    ///
-    /// - parameter arraySlice: this is containing the converting value
-    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
-    /// - returns: the value converted
-    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the arraySlice
-    public class func convert<T: BinaryCompatible>(arraySlice: ArraySlice<UInt8>, byteOrder: ByteOrder? = nil) throws -> T {
-        return try convert(stream: BinaryStream(arraySlice: arraySlice), byteOrder: byteOrder)
+    /// Converts the `[UInt8]` into `T`, by reading the `binary`.
+    public class func convert<T: BinaryCompatible>(binary arraySlice: ArraySlice<UInt8>, byteOrder: ByteOrder? = nil) throws -> T {
+        return try convert(binary: BinaryStream(arraySlice), byteOrder: byteOrder)
     }
 
-    /// Converts the `[UInt8]` into `T`, by reading the `stream`.
+    /// Converts the `[UInt8]` into `T`, by reading the `binary`.
     ///
-    /// - parameter stream: this is containing the converting value
+    /// - parameter binary: this is containing the converting value
     /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
     /// - returns: the value converted
-    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the stream
-    public class func convert<T: BinaryCompatible>(stream: BinaryStream, byteOrder: ByteOrder? = nil) throws -> T {
+    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the binary
+    public class func convert<T: BinaryCompatible>(binary stream: BinaryStream, byteOrder: ByteOrder? = nil) throws -> T {
         return try T(stream: stream, byteOrder: byteOrder)
     }
     
-    /// Converts the `[UInt8]` into `[T]`, by reading the `array`.
-    ///
-    /// - parameter array: this is containing the converting values
-    /// - parameter count: the count of the converting values
-    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
-    /// - returns: the value converted
-    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the array
-    public class func convert<T: BinaryCompatible>(array: Array<UInt8>, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
-        return try convert(stream: BinaryStream(array: array, startIndex: 0), count: count, byteOrder: byteOrder)
+    
+    /// Converts the `[UInt8]` into `[T]`, by reading the `binary`.
+    public class func convert<T: BinaryCompatible>(binary array: Array<UInt8>, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
+        return try convert(binary: BinaryStream(array, startIndex: 0), count: count, byteOrder: byteOrder)
     }
     
-    /// Converts the `[UInt8]` into `[T]`, by reading the `arraySlice`.
-    ///
-    /// - parameter arraySlice: this is containing the converting values
-    /// - parameter count: the count of the converting values
-    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
-    /// - returns: the value converted
-    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the arraySlice
-    public class func convert<T: BinaryCompatible>(arraySlice: ArraySlice<UInt8>, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
-        return try convert(stream: BinaryStream(arraySlice: arraySlice), count: count, byteOrder: byteOrder)
+    /// Converts the `[UInt8]` into `[T]`, by reading the `binary`.
+    public class func convert<T: BinaryCompatible>(binary arraySlice: ArraySlice<UInt8>, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
+        return try convert(binary: BinaryStream(arraySlice), count: count, byteOrder: byteOrder)
     }
     
-    /// Converts the `[UInt8]` into `[T]`, by reading the `stream`.
+    /// Converts the `[UInt8]` into `[T]`, by reading the `binary`.
     ///
     /// - parameter stream: this is containing the converting values
     /// - parameter count: the count of the converting values
     /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
     /// - returns: the value converted
     /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the stream
-    public class func convert<T: BinaryCompatible>(stream: BinaryStream, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
+    public class func convert<T: BinaryCompatible>(binary stream: BinaryStream, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
         var value = [] as [T]
         for _ in 0..<count {
             value.append(try T(stream: stream, byteOrder: byteOrder))
@@ -184,15 +163,15 @@ public class BinaryConverter {
     }
     
     
-    public class func convert<Key: Hashable>(array: Array<UInt8>, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
-        return try convert(stream: BinaryStream(array: array, startIndex: 0), layout: layout, defaultByteOrder: defaultByteOrder)
+    public class func convert<Key: Hashable>(binary array: Array<UInt8>, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+        return try convert(binary: BinaryStream(array, startIndex: 0), layout: layout, defaultByteOrder: defaultByteOrder)
     }
     
-    public class func convert<Key: Hashable>(arraySlice: ArraySlice<UInt8>, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
-        return try convert(stream: BinaryStream(arraySlice: arraySlice), layout: layout, defaultByteOrder: defaultByteOrder)
+    public class func convert<Key: Hashable>(binary arraySlice: ArraySlice<UInt8>, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+        return try convert(binary: BinaryStream(arraySlice), layout: layout, defaultByteOrder: defaultByteOrder)
     }
     
-    public class func convert<Key: Hashable>(stream: BinaryStream, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+    public class func convert<Key: Hashable>(binary stream: BinaryStream, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
         for (key, type, byteOrder) in layout {
             result[key] = try type.init(stream: stream, byteOrder: byteOrder ?? defaultByteOrder)
@@ -201,15 +180,15 @@ public class BinaryConverter {
     }
 
     
-    public class func convert<Key: Hashable>(array: Array<UInt8>, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
-        return try convert(stream: BinaryStream(array: array, startIndex: 0), layout: layout, defaultByteOrder: defaultByteOrder)
+    public class func convert<Key: Hashable>(binary array: Array<UInt8>, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+        return try convert(binary: BinaryStream(array, startIndex: 0), layout: layout, defaultByteOrder: defaultByteOrder)
     }
     
-    public class func convert<Key: Hashable>(arraySlice: ArraySlice<UInt8>, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
-        return try convert(stream: BinaryStream(arraySlice: arraySlice), layout: layout, defaultByteOrder: defaultByteOrder)
+    public class func convert<Key: Hashable>(binary arraySlice: ArraySlice<UInt8>, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+        return try convert(binary: BinaryStream(arraySlice), layout: layout, defaultByteOrder: defaultByteOrder)
     }
     
-    public class func convert<Key: Hashable>(stream: BinaryStream, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+    public class func convert<Key: Hashable>(binary stream: BinaryStream, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
         for (key, type, byteOrder) in layout {
             switch type {

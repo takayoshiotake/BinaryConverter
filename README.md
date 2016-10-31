@@ -25,15 +25,16 @@ public protocol BinaryCompatible {
 - Converting `[UInt8]` into `Int16`
 
 ```
-BinaryConverter.convert(array: [0x80, 0x00], byteOrder: .little) as Int16 // 128
-BinaryConverter.convert(array: [0x80, 0x00], byteOrder: .big) as Int16 // -32768
+print(try! BinaryConverter.convert(binary: [0x80, 0x00], byteOrder: .little) as Int16) // 128
+print(try! BinaryConverter.convert(binary: [0x80, 0x00], byteOrder: .big) as Int16) // -32768
 ```
 
 - Converting 8 bytes byte array into [CChar]
 
 ```
-BinaryConverter.convert(array: [0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00], count: 8) as [CChar]
-let str = withUnsafePointer(to: &result[0]) { String(cString: $0) } // "ASCII"
+var asciiz8 = try! BinaryConverter.convert(binary: [0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00], count: 8) as [CChar]
+let str = withUnsafePointer(to: &asciiz8[0]) { String(cString: $0) }
+print(str) // "ASCII"
 ```
 
 - Converting `[UInt8]` with layout information
@@ -41,13 +42,20 @@ let str = withUnsafePointer(to: &result[0]) { String(cString: $0) } // "ASCII"
 ```
 // id: UInt8, asciiz: [CChar](count: 8)
 let array = [0x01, 0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00] as [UInt8]
-let values = try! BinaryConverter.convert(array: array, layout: [("id", BinaryType(UInt8.self), nil), ("value", BinaryType(CChar.self, count: 8), nil)]) // ["id": 1, "value": [65, 83, 67, 73, 73, 0, 0, 0]]
+let values = try! BinaryConverter.convert(binary: array, layout: [("id", BinaryType(UInt8.self), nil), ("asciiz", BinaryType(CChar.self, count: 8), nil)])
+print(values) // ["id": 1, "asciiz": [65, 83, 67, 73, 73, 0, 0, 0]]
 ```
 
 - Converting `Int16` into `[UInt8]`
 
 ```swift
-// implementing...
+print(BinaryConverter.convert(value: 128 as Int16, byteOrder: .little)) // [128, 0]
+```
+
+- Converting `[Int16]` into `[UInt8]`
+
+```swift
+print(BinaryConverter.convert(values: [0x7fff, 0x0102] as [Int16], byteOrder: .big)) // [127, 255, 1, 2]
 ```
 
 See *BinaryConverterTests.swift* for more details.
