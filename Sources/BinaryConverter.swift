@@ -10,6 +10,7 @@ import Foundation
 
 public enum BinaryConverterError: Error {
     case streamIsShort
+    case notSupportedType
 }
 
 public enum ByteOrder {
@@ -206,7 +207,7 @@ public class BinaryConverter {
         return value.convertIntoBinary(byteOrder: byteOrder)
     }
     
-    public class func convert(values: [BinaryCompatible], byteOrder: ByteOrder? = nil) -> [UInt8] {
+    public class func convert<T: BinaryCompatible>(values: Array<T>, byteOrder: ByteOrder? = nil) -> [UInt8] {
         var binary: [UInt8] = []
         for value in values {
             binary.append(contentsOf: value.convertIntoBinary(byteOrder: byteOrder))
@@ -214,4 +215,60 @@ public class BinaryConverter {
         return binary
     }
     
+    // FIXME: limit type of `mixedValues` to as like Array<Binarizable>, but `Array` can not inherit protocol with 'Element' constraints in Swift 3.0.x. And I want to remove the `throws`.
+    public class func convert(mixedValues: Array<Any>, byteOrder: ByteOrder? = nil) throws -> [UInt8] {
+        var binary: [UInt8] = []
+        for unknownTypeValue in mixedValues {
+            switch unknownTypeValue {
+            case let value as BinaryCompatible:
+                binary.append(contentsOf: convert(value: value, byteOrder: byteOrder))
+            case let values as Array<BinaryCompatible>:
+                #if false
+                    // Error: in Swift 3.0.x
+                    binary.append(contentsOf: convert(values: values, byteOrder: byteOrder))
+                #else
+                    for value in values {
+                        binary.append(contentsOf: convert(value: value, byteOrder: byteOrder))
+                    }
+                #endif
+            default:
+                throw BinaryConverterError.notSupportedType
+            }
+        }
+        return binary
+    }
+    
 }
+
+//
+// I want to write as following, but it is ill-formed in Swift 3.0.x
+//
+//public protocol Binarizable {
+//    func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8]
+//}
+//
+//// Error: Extension of protocol 'BinaryCompatible' cannot have an inheritance clause
+//extension BinaryCompatible: Binarizable {
+//}
+//
+//// Error: Extension of type 'Array' with constraints cannot have an inheritance clause
+//extension Array: Binarizable where Element: BinaryCompatible {
+//    internal func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+//        var binary: [UInt8] = []
+//        for value in self {
+//            binary.append(contentsOf: value.convertIntoBinary(byteOrder: byteOrder))
+//        }
+//        return binary
+//    }
+//}
+
+// This is nonsence...
+//extension Array where Element: BinaryCompatible {
+//    internal func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+//        var binary: [UInt8] = []
+//        for value in self {
+//            binary.append(contentsOf: value.convertIntoBinary(byteOrder: byteOrder))
+//        }
+//        return binary
+//    }
+//}

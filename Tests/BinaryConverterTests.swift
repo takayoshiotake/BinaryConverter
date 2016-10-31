@@ -100,6 +100,24 @@ class BinaryConverterTests: XCTestCase {
         XCTAssert(result == [0x7f, 0xff, 0x01, 0x02])
     }
     
+    func testConvertingValuesIntoBinary() {
+        var asciiz8 = [CChar](repeating: 0, count: 8)
+        let asciiz = "ASCII".cString(using: .ascii)!
+        asciiz8.replaceSubrange(0..<asciiz.count, with: asciiz)
+        
+        let values = [
+            128 as Int16,
+            0x01020304 as UInt32,
+            asciiz8
+        ] as [Any]
+        let result = try! BinaryConverter.convert(mixedValues: values, byteOrder: .big)
+        XCTAssert(result == [
+            0x00, 0x80,
+            0x01, 0x02, 0x03, 0x04,
+            0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00
+        ])
+    }
+    
     func testExample() {
         print(try! BinaryConverter.convert(binary: [0x80, 0x00], byteOrder: .little) as Int16) // 128
         print(try! BinaryConverter.convert(binary: [0x80, 0x00], byteOrder: .big) as Int16) // -32768
@@ -116,5 +134,8 @@ class BinaryConverterTests: XCTestCase {
         
         print(BinaryConverter.convert(value: 128 as Int16, byteOrder: .little))
         print(BinaryConverter.convert(values: [0x7fff, 0x0102] as [Int16], byteOrder: .big))
+        
+        let result = try! BinaryConverter.convert(mixedValues: [-32768 as Int16, 0x01020304 as UInt32, "ASCII".cString(using: .ascii)!], byteOrder: .big)
+        print(result) // [128, 0, 1, 2, 3, 4, 65, 83, 67, 73, 73, 0]
     }
 }
