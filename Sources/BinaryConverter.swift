@@ -105,6 +105,7 @@ public class BinaryStream {
 }
 
 /// Converts the `[UInt8]` into `BinaryCompatible` value(s), by reading the `Array<UInt8>`, `ArraySlice<UInt8>` or `BinaryStream`.
+/// And converts the `BinaryCompatible` value(s) into `[UInt8]`.
 ///
 /// Converting example:
 /// 
@@ -113,10 +114,12 @@ public class BinaryStream {
 ///
 public class BinaryConverter {
     
+    // MARK: - Converting `[UInt8]` into `BinaryCompatible` value(s)
+    
     /// Converts the `[UInt8]` into `T`, by reading the `array`.
     ///
     /// - parameter array: this is containing the converting value
-    /// - parameter byteOrder: the byte order of the array; default is `nil` (optional)
+    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
     /// - returns: the value converted
     /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the array
     public class func convert<T: BinaryCompatible>(array: Array<UInt8>, byteOrder: ByteOrder? = nil) throws -> T {
@@ -126,7 +129,7 @@ public class BinaryConverter {
     /// Converts the `[UInt8]` into `T`, by reading the `arraySlice`.
     ///
     /// - parameter arraySlice: this is containing the converting value
-    /// - parameter byteOrder: the byte order of the array; default is `nil` (optional)
+    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
     /// - returns: the value converted
     /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the arraySlice
     public class func convert<T: BinaryCompatible>(arraySlice: ArraySlice<UInt8>, byteOrder: ByteOrder? = nil) throws -> T {
@@ -136,22 +139,42 @@ public class BinaryConverter {
     /// Converts the `[UInt8]` into `T`, by reading the `stream`.
     ///
     /// - parameter stream: this is containing the converting value
-    /// - parameter byteOrder: the byte order of the array; default is `nil` (optional)
+    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
     /// - returns: the value converted
     /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the stream
     public class func convert<T: BinaryCompatible>(stream: BinaryStream, byteOrder: ByteOrder? = nil) throws -> T {
         return try T(stream: stream, byteOrder: byteOrder)
     }
     
-    
+    /// Converts the `[UInt8]` into `[T]`, by reading the `array`.
+    ///
+    /// - parameter array: this is containing the converting values
+    /// - parameter count: the count of the converting values
+    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
+    /// - returns: the value converted
+    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the array
     public class func convert<T: BinaryCompatible>(array: Array<UInt8>, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
         return try convert(stream: BinaryStream(array: array, startIndex: 0), count: count, byteOrder: byteOrder)
     }
     
+    /// Converts the `[UInt8]` into `[T]`, by reading the `arraySlice`.
+    ///
+    /// - parameter arraySlice: this is containing the converting values
+    /// - parameter count: the count of the converting values
+    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
+    /// - returns: the value converted
+    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the arraySlice
     public class func convert<T: BinaryCompatible>(arraySlice: ArraySlice<UInt8>, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
         return try convert(stream: BinaryStream(arraySlice: arraySlice), count: count, byteOrder: byteOrder)
     }
     
+    /// Converts the `[UInt8]` into `[T]`, by reading the `stream`.
+    ///
+    /// - parameter stream: this is containing the converting values
+    /// - parameter count: the count of the converting values
+    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
+    /// - returns: the value converted
+    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the stream
     public class func convert<T: BinaryCompatible>(stream: BinaryStream, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
         var value = [] as [T]
         for _ in 0..<count {
@@ -203,6 +226,20 @@ public class BinaryConverter {
             }
         }
         return result
+    }
+    
+    // MARK: - Converting `BinaryCompatible` value(s) into `[UInt8]`
+    
+    public class func convert(value: BinaryCompatible, byteOrder: ByteOrder? = nil) -> [UInt8] {
+        return value.convertIntoBinary(byteOrder: byteOrder)
+    }
+    
+    public class func convert(values: [BinaryCompatible], byteOrder: ByteOrder? = nil) -> [UInt8] {
+        var binary: [UInt8] = []
+        for value in values {
+            binary.append(contentsOf: value.convertIntoBinary(byteOrder: byteOrder))
+        }
+        return binary
     }
     
 }

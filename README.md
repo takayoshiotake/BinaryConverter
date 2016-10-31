@@ -14,7 +14,7 @@ Type of the value must adopt `BinaryCompatible` protocol.
 ```swift
 public protocol BinaryCompatible {
     init(stream: BinaryStream, byteOrder: ByteOrder?) throws
-    func convertIntoBinary(byteOrder: ByteOrder?) throws -> [UInt8]
+    func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8]
 }
 ```
 

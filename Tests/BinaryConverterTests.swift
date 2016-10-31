@@ -24,7 +24,7 @@ extension SimpleStructForTest: BinaryCompatible {
     }
     
     // TODO: untested
-    public func convertIntoBinary(byteOrder: ByteOrder?) throws -> [UInt8] {
+    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
         return []
     }
 }
@@ -90,4 +90,16 @@ class BinaryConverterTests: XCTestCase {
         XCTAssert(values.count == 8)
     }
     
+    
+    func testConvertingValueIntoLittleEndian() {
+        let value = 128 as Int16
+        let result = BinaryConverter.convert(value: value, byteOrder: .little)
+        XCTAssert(result == [0x80, 0x00])
+    }
+    
+    func testConvertingValuesIntoBigEndian() {
+        let values = [0x7fff, 0x0102] as [UInt16]
+        let result = BinaryConverter.convert(values: values, byteOrder: .big)
+        XCTAssert(result == [0x7f, 0xff, 0x01, 0x02])
+    }
 }

@@ -10,7 +10,7 @@ import Foundation
 
 public protocol BinaryCompatible {
     init(stream: BinaryStream, byteOrder: ByteOrder?) throws
-    func convertIntoBinary(byteOrder: ByteOrder?) throws -> [UInt8]
+    func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8]
 }
 
 // MARK: - Preset extensions
