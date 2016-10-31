@@ -15,8 +15,8 @@
 		123105D41DB1E4910046A01C /* BinaryConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123105061DB120F20046A01C /* BinaryConverter.swift */; };
 		123105D61DB1E49E0046A01C /* BinaryConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 123104EA1DB11C780046A01C /* BinaryConverter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		123105D71DB1E6200046A01C /* BinaryConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123104F51DB11C780046A01C /* BinaryConverterTests.swift */; };
-		12EA4B2A1DC5D377007E9CD9 /* BinaryCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EA4B291DC5D377007E9CD9 /* BinaryCompatible.swift */; };
-		12EA4B2B1DC5D462007E9CD9 /* BinaryCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EA4B291DC5D377007E9CD9 /* BinaryCompatible.swift */; };
+		12EA4B2A1DC5D377007E9CD9 /* +BinaryCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EA4B291DC5D377007E9CD9 /* +BinaryCompatible.swift */; };
+		12EA4B2B1DC5D462007E9CD9 /* +BinaryCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EA4B291DC5D377007E9CD9 /* +BinaryCompatible.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +46,7 @@
 		123105B71DB13EBE0046A01C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		123105BD1DB1E47D0046A01C /* BinaryConverter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BinaryConverter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		123105C51DB1E47D0046A01C /* BinaryConverterTests.macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BinaryConverterTests.macOS.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		12EA4B291DC5D377007E9CD9 /* BinaryCompatible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryCompatible.swift; sourceTree = "<group>"; };
+		12EA4B291DC5D377007E9CD9 /* +BinaryCompatible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "+BinaryCompatible.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,7 +108,7 @@
 			children = (
 				123104EA1DB11C780046A01C /* BinaryConverter.h */,
 				123105061DB120F20046A01C /* BinaryConverter.swift */,
-				12EA4B291DC5D377007E9CD9 /* BinaryCompatible.swift */,
+				12EA4B291DC5D377007E9CD9 /* +BinaryCompatible.swift */,
 				123105B71DB13EBE0046A01C /* Info.plist */,
 			);
 			path = Sources;
@@ -305,7 +305,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12EA4B2A1DC5D377007E9CD9 /* BinaryCompatible.swift in Sources */,
+				12EA4B2A1DC5D377007E9CD9 /* +BinaryCompatible.swift in Sources */,
 				123105071DB120F20046A01C /* BinaryConverter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -322,7 +322,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12EA4B2B1DC5D462007E9CD9 /* BinaryCompatible.swift in Sources */,
+				12EA4B2B1DC5D462007E9CD9 /* +BinaryCompatible.swift in Sources */,
 				123105D41DB1E4910046A01C /* BinaryConverter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

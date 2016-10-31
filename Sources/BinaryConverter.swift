@@ -8,14 +8,21 @@
 
 import Foundation
 
+public let defaultByteOrder = ByteOrder.littleEndian
+
 public enum BinaryConverterError: Error {
     case streamIsShort
     case notSupportedType
 }
 
 public enum ByteOrder {
-    case little
-    case big
+    case littleEndian
+    case bigEndian
+}
+
+public protocol BinaryCompatible {
+    init(stream: BinaryStream, byteOrder: ByteOrder?) throws
+    func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8]
 }
 
 public enum BinaryType {
@@ -30,8 +37,6 @@ public enum BinaryType {
         self = .fixedCountArray(type: type, count: count)
     }
 }
-
-public let defaultByteOrder = ByteOrder.little
 
 public class BinaryStream {
     public let binary: ArraySlice<UInt8>

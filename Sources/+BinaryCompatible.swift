@@ -1,5 +1,5 @@
 //
-//  BinaryCompatible.swift
+//  +BinaryCompatible.swift
 //  BinaryConverter
 //
 //  Created by OTAKE Takayoshi on 2016/10/30.
@@ -7,13 +7,6 @@
 //
 
 import Foundation
-
-public protocol BinaryCompatible {
-    init(stream: BinaryStream, byteOrder: ByteOrder?) throws
-    func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8]
-}
-
-// MARK: - Preset extensions
 
 extension UInt8: BinaryCompatible {
     public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
@@ -35,9 +28,9 @@ extension UInt16: BinaryCompatible {
             }
         }
         switch byteOrder ?? defaultByteOrder {
-        case .little:
+        case .littleEndian:
             self = UInt16(littleEndian: value)
-        case .big:
+        case .bigEndian:
             self = UInt16(bigEndian: value)
         }
     }
@@ -45,12 +38,12 @@ extension UInt16: BinaryCompatible {
     // TODO: untested
     public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
         switch byteOrder ?? defaultByteOrder {
-        case .little:
+        case .littleEndian:
             return [
                 UInt8(self >> 0 & 0xff),
                 UInt8(self >> 8 & 0xff)
             ]
-        case .big:
+        case .bigEndian:
             return [
                 UInt8(self >> 8 & 0xff),
                 UInt8(self >> 0 & 0xff)
@@ -68,9 +61,9 @@ extension UInt32: BinaryCompatible {
             }
         }
         switch byteOrder ?? defaultByteOrder {
-        case .little:
+        case .littleEndian:
             self = UInt32(littleEndian: value)
-        case .big:
+        case .bigEndian:
             self = UInt32(bigEndian: value)
         }
     }
@@ -78,14 +71,14 @@ extension UInt32: BinaryCompatible {
     // TODO: untested
     public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
         switch byteOrder ?? defaultByteOrder {
-        case .little:
+        case .littleEndian:
             return [
                 UInt8(self >> 0 & 0xff),
                 UInt8(self >> 8 & 0xff),
                 UInt8(self >> 16 & 0xff),
                 UInt8(self >> 24 & 0xff)
             ]
-        case .big:
+        case .bigEndian:
             return [
                 UInt8(self >> 24 & 0xff),
                 UInt8(self >> 16 & 0xff),
@@ -116,9 +109,9 @@ extension Int16: BinaryCompatible {
             }
         }
         switch byteOrder ?? defaultByteOrder {
-        case .little:
+        case .littleEndian:
             self = Int16(littleEndian: value)
-        case .big:
+        case .bigEndian:
             self = Int16(bigEndian: value)
         }
     }
@@ -126,12 +119,12 @@ extension Int16: BinaryCompatible {
     // TODO: untested
     public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
         switch byteOrder ?? defaultByteOrder {
-        case .little:
+        case .littleEndian:
             return [
                 UInt8(self >> 0 & 0xff),
                 UInt8(self >> 8 & 0xff)
             ]
-        case .big:
+        case .bigEndian:
             return [
                 UInt8(self >> 8 & 0xff),
                 UInt8(self >> 0 & 0xff)
@@ -149,9 +142,9 @@ extension Int32: BinaryCompatible {
             }
         }
         switch byteOrder ?? defaultByteOrder {
-        case .little:
+        case .littleEndian:
             self = Int32(littleEndian: value)
-        case .big:
+        case .bigEndian:
             self = Int32(bigEndian: value)
         }
     }
@@ -159,14 +152,14 @@ extension Int32: BinaryCompatible {
     // TODO: untested
     public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
         switch byteOrder ?? defaultByteOrder {
-        case .little:
+        case .littleEndian:
             return [
                 UInt8(self >> 0 & 0xff),
                 UInt8(self >> 8 & 0xff),
                 UInt8(self >> 16 & 0xff),
                 UInt8(self >> 24 & 0xff)
             ]
-        case .big:
+        case .bigEndian:
             return [
                 UInt8(self >> 24 & 0xff),
                 UInt8(self >> 16 & 0xff),
