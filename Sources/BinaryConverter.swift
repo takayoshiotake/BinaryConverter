@@ -10,7 +10,6 @@ import Foundation
 
 public enum BinaryConverterError: Error {
     case streamIsShort
-    case notSupported
 }
 
 public enum ByteOrder {
@@ -141,7 +140,7 @@ public class BinaryConverter {
     /// - returns: the value converted
     /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the stream
     public class func convert<T: BinaryCompatible>(stream: BinaryStream, byteOrder: ByteOrder? = nil) throws -> T {
-        return try T.read(stream: stream, byteOrder: byteOrder)
+        return try T(stream: stream, byteOrder: byteOrder)
     }
     
     
@@ -156,7 +155,7 @@ public class BinaryConverter {
     public class func convert<T: BinaryCompatible>(stream: BinaryStream, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
         var value = [] as [T]
         for _ in 0..<count {
-            value.append(try T.read(stream: stream, byteOrder: byteOrder))
+            value.append(try T(stream: stream, byteOrder: byteOrder))
         }
         return value
     }
@@ -173,7 +172,7 @@ public class BinaryConverter {
     public class func convert<Key: Hashable>(stream: BinaryStream, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
         for (key, type, byteOrder) in layout {
-            result[key] = try type.read(stream: stream, byteOrder: byteOrder ?? defaultByteOrder)
+            result[key] = try type.init(stream: stream, byteOrder: byteOrder ?? defaultByteOrder)
         }
         return result
     }
@@ -192,12 +191,12 @@ public class BinaryConverter {
         for (key, type, byteOrder) in layout {
             switch type {
             case .type(let type):
-                result[key] = try type.read(stream: stream, byteOrder: byteOrder ?? defaultByteOrder)
+                result[key] = try type.init(stream: stream, byteOrder: byteOrder ?? defaultByteOrder)
                 break
             case .fixedCountArray(let type, let count):
                 var array = [] as [Any]
                 for _ in 0..<count {
-                    array.append(try type.read(stream: stream, byteOrder: byteOrder ?? defaultByteOrder))
+                    array.append(try type.init(stream: stream, byteOrder: byteOrder ?? defaultByteOrder))
                 }
                 result[key] = array
                 break

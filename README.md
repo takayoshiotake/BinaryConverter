@@ -13,7 +13,7 @@ Type of the value must adopt `BinaryCompatible` protocol.
 
 ```swift
 public protocol BinaryCompatible {
-    static func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> Self
+    init(stream: BinaryStream, byteOrder: ByteOrder?) throws
     func convertIntoBinary(byteOrder: ByteOrder?) throws -> [UInt8]
 }
 ```

@@ -15,17 +15,17 @@ struct SimpleStructForTest {
 }
 
 extension SimpleStructForTest: BinaryCompatible {
-    static public func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> SimpleStructForTest {
+    public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
         let layout: [(String, BinaryCompatible.Type, ByteOrder?)] = [
             ("id", UInt8.self, nil),
             ("count", UInt16.self, nil)]
         let converted = try BinaryConverter.convert(stream: stream, layout: layout, defaultByteOrder: byteOrder)
-        return SimpleStructForTest(id: converted["id"] as! UInt8, count: converted["count"] as! UInt16)
+        self = SimpleStructForTest(id: converted["id"] as! UInt8, count: converted["count"] as! UInt16)
     }
     
     // TODO: untested
     public func convertIntoBinary(byteOrder: ByteOrder?) throws -> [UInt8] {
-        throw BinaryConverterError.notSupported
+        return []
     }
 }
 

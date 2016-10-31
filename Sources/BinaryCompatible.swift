@@ -9,15 +9,15 @@
 import Foundation
 
 public protocol BinaryCompatible {
-    static func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> Self
+    init(stream: BinaryStream, byteOrder: ByteOrder?) throws
     func convertIntoBinary(byteOrder: ByteOrder?) throws -> [UInt8]
 }
 
 // MARK: - Preset extensions
 
 extension UInt8: BinaryCompatible {
-    static public func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> UInt8 {
-        return try stream.read()
+    public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
+        self = try stream.read()
     }
     
     // TODO: untested
@@ -27,7 +27,7 @@ extension UInt8: BinaryCompatible {
 }
 
 extension UInt16: BinaryCompatible {
-    static public func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> UInt16 {
+    public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
         var buffer = try stream.readBytes(length: 2)
         let value = withUnsafePointer(to: &buffer[0]) {
             $0.withMemoryRebound(to: UInt16.self, capacity: 1) {
@@ -36,9 +36,9 @@ extension UInt16: BinaryCompatible {
         }
         switch byteOrder ?? defaultByteOrder {
         case .little:
-            return UInt16(littleEndian: value)
+            self = UInt16(littleEndian: value)
         case .big:
-            return UInt16(bigEndian: value)
+            self = UInt16(bigEndian: value)
         }
     }
     
@@ -60,7 +60,7 @@ extension UInt16: BinaryCompatible {
 }
 
 extension UInt32: BinaryCompatible {
-    static public func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> UInt32 {
+    public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
         var buffer = try stream.readBytes(length: 4)
         let value = withUnsafePointer(to: &buffer[0]) {
             $0.withMemoryRebound(to: UInt32.self, capacity: 1) {
@@ -69,9 +69,9 @@ extension UInt32: BinaryCompatible {
         }
         switch byteOrder ?? defaultByteOrder {
         case .little:
-            return UInt32(littleEndian: value)
+            self = UInt32(littleEndian: value)
         case .big:
-            return UInt32(bigEndian: value)
+            self = UInt32(bigEndian: value)
         }
     }
     
@@ -97,8 +97,8 @@ extension UInt32: BinaryCompatible {
 }
 
 extension Int8: BinaryCompatible {
-    static public func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> Int8 {
-        return Int8(bitPattern: try stream.read())
+    public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
+        self = Int8(bitPattern: try stream.read())
     }
     
     // TODO: untested
@@ -108,7 +108,7 @@ extension Int8: BinaryCompatible {
 }
 
 extension Int16: BinaryCompatible {
-    static public func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> Int16 {
+    public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
         var buffer = try stream.readBytes(length: 2)
         let value = withUnsafePointer(to: &buffer[0]) {
             $0.withMemoryRebound(to: Int16.self, capacity: 1) {
@@ -117,9 +117,9 @@ extension Int16: BinaryCompatible {
         }
         switch byteOrder ?? defaultByteOrder {
         case .little:
-            return Int16(littleEndian: value)
+            self = Int16(littleEndian: value)
         case .big:
-            return Int16(bigEndian: value)
+            self = Int16(bigEndian: value)
         }
     }
     
@@ -141,7 +141,7 @@ extension Int16: BinaryCompatible {
 }
 
 extension Int32: BinaryCompatible {
-    static public func read(stream: BinaryStream, byteOrder: ByteOrder?) throws -> Int32 {
+    public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
         var buffer = try stream.readBytes(length: 4)
         let value = withUnsafePointer(to: &buffer[0]) {
             $0.withMemoryRebound(to: Int32.self, capacity: 1) {
@@ -150,9 +150,9 @@ extension Int32: BinaryCompatible {
         }
         switch byteOrder ?? defaultByteOrder {
         case .little:
-            return Int32(littleEndian: value)
+            self = Int32(littleEndian: value)
         case .big:
-            return Int32(bigEndian: value)
+            self = Int32(bigEndian: value)
         }
     }
     
