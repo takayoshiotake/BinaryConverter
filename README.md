@@ -25,8 +25,8 @@ public protocol BinaryCompatible {
 - Converting `[UInt8]` into `Int16`
 
 ```
-print(try! BinaryConverter.convert(binary: [0x80, 0x00], byteOrder: .little) as Int16) // 128
-print(try! BinaryConverter.convert(binary: [0x80, 0x00], byteOrder: .big) as Int16) // -32768
+print(try! BinaryConverter.convert(binary: [0x80, 0x00], byteOrder: .littleEndian) as Int16) // 128
+print(try! BinaryConverter.convert(binary: [0x80, 0x00], byteOrder: .bigEndian) as Int16) // -32768
 ```
 
 - Converting 8 bytes binary into [CChar]
@@ -49,18 +49,18 @@ print(values) // ["id": 1, "asciiz": [65, 83, 67, 73, 73, 0, 0, 0]]
 - Converting `Int16` into `[UInt8]`
 
 ```swift
-print(BinaryConverter.convert(value: 128 as Int16, byteOrder: .little)) // [128, 0]
+print(BinaryConverter.convert(value: 128 as Int16, byteOrder: .littleEndian)) // [128, 0]
 ```
 
 - Converting `[Int16]` into `[UInt8]`
 
 ```swift
-print(BinaryConverter.convert(values: [0x7fff, 0x0102] as [Int16], byteOrder: .big)) // [127, 255, 1, 2]
+print(BinaryConverter.convert(values: [0x7fff, 0x0102] as [Int16], byteOrder: .bigEndian)) // [127, 255, 1, 2]
 ```
 - Converting values into `[UInt8]`
 
 ```swift
-let result = try! BinaryConverter.convert(mixedValues: [-32768 as Int16, 0x01020304 as UInt32, "ASCII".cString(using: .ascii)!], byteOrder: .big)
+let result = try! BinaryConverter.convert(mixedValues: [-32768 as Int16, 0x01020304 as UInt32, "ASCII".cString(using: .ascii)!], byteOrder: .bigEndian)
 print(result) // [128, 0, 1, 2, 3, 4, 65, 83, 67, 73, 73, 0]
 ```
 
