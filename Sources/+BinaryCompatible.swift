@@ -183,3 +183,23 @@ extension Data: Binarizable, BinaryPersable {
         return binary
     }
 }
+
+extension Array: Binarizable where Element: Binarizable {
+    public func binarize(byteOrder: ByteOrder) -> [UInt8] {
+        var binary: [UInt8] = []
+        for value in self {
+            binary.append(contentsOf: value.binarize(byteOrder: byteOrder))
+        }
+        return binary
+    }
+}
+
+extension ArraySlice: Binarizable where Element: Binarizable {
+    public func binarize(byteOrder: ByteOrder) -> [UInt8] {
+        var binary: [UInt8] = []
+        for value in self {
+            binary.append(contentsOf: value.binarize(byteOrder: byteOrder))
+        }
+        return binary
+    }
+}

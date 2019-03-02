@@ -23,7 +23,7 @@ extension SimpleStructForTest: Binarizable, BinaryPersable {
     }
     
     public func binarize(byteOrder: ByteOrder) -> [UInt8] {
-        return try! BinaryConverter.binarize(mixedValues: [id, count], byteOrder: byteOrder)
+        return BinaryConverter.binarize(values: [id, count], byteOrder: byteOrder)
     }
 }
 
@@ -116,8 +116,8 @@ class BinaryConverterTests: XCTestCase {
             128 as Int16,
             0x01020304 as UInt32,
             asciiz8
-        ] as [Any]
-        let result = try! BinaryConverter.binarize(mixedValues: values, byteOrder: .bigEndian)
+        ] as [Binarizable]
+        let result = BinaryConverter.binarize(values: values, byteOrder: .bigEndian)
         XCTAssert(result == [
             0x00, 0x80,
             0x01, 0x02, 0x03, 0x04,
@@ -149,7 +149,7 @@ class BinaryConverterTests: XCTestCase {
         print(BinaryConverter.binarize(value: 128 as Int16, byteOrder: .littleEndian))
         print(BinaryConverter.binarize(values: [0x7fff, 0x0102] as [Int16], byteOrder: .bigEndian))
         
-        let result = try! BinaryConverter.binarize(mixedValues: [-32768 as Int16, 0x01020304 as UInt32, "ASCII".cString(using: .ascii)!], byteOrder: .bigEndian)
+        let result = BinaryConverter.binarize(values: [-32768 as Int16, 0x01020304 as UInt32, "ASCII".cString(using: .ascii)!], byteOrder: .bigEndian)
         print(result) // [128, 0, 1, 2, 3, 4, 65, 83, 67, 73, 73, 0]
     }
 }
