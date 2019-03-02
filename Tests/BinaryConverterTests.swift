@@ -23,7 +23,7 @@ extension SimpleStructForTest: BinaryCompatible {
         self = SimpleStructForTest(id: converted["id"] as! UInt8, count: converted["count"] as! UInt16)
     }
     
-    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+    public func binarize(byteOrder: ByteOrder?) -> [UInt8] {
         return try! BinaryConverter.convert(mixedValues: [id, count], byteOrder: byteOrder)
     }
 }

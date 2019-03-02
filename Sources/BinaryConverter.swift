@@ -24,9 +24,12 @@ public enum ByteOrder {
     }
 }
 
-public protocol BinaryCompatible {
+public protocol Binarizable {
+    func binarize(byteOrder: ByteOrder?) -> [UInt8]
+}
+
+public protocol BinaryCompatible : Binarizable {
     init(stream: ReadableByteStream, byteOrder: ByteOrder?) throws
-    func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8]
 }
 
 public enum BinaryType {
@@ -148,13 +151,13 @@ public class BinaryConverter {
     // MARK: - Converting `BinaryCompatible` value(s) into `[UInt8]`
     
     public class func convert(value: BinaryCompatible, byteOrder: ByteOrder? = nil) -> [UInt8] {
-        return value.convertIntoBinary(byteOrder: byteOrder)
+        return value.binarize(byteOrder: byteOrder)
     }
     
     public class func convert<T: BinaryCompatible>(values: Array<T>, byteOrder: ByteOrder? = nil) -> [UInt8] {
         var binary: [UInt8] = []
         for value in values {
-            binary.append(contentsOf: value.convertIntoBinary(byteOrder: byteOrder))
+            binary.append(contentsOf: value.binarize(byteOrder: byteOrder))
         }
         return binary
     }

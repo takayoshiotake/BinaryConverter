@@ -14,7 +14,7 @@ extension UInt8: BinaryCompatible {
     }
     
     // TODO: untested
-    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+    public func binarize(byteOrder: ByteOrder?) -> [UInt8] {
         return [self]
     }
 }
@@ -36,7 +36,7 @@ extension UInt16: BinaryCompatible {
     }
     
     // TODO: untested
-    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+    public func binarize(byteOrder: ByteOrder?) -> [UInt8] {
         switch byteOrder ?? .hostEndian {
         case .littleEndian:
             return [
@@ -69,7 +69,7 @@ extension UInt32: BinaryCompatible {
     }
     
     // TODO: untested
-    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+    public func binarize(byteOrder: ByteOrder?) -> [UInt8] {
         switch byteOrder ?? .hostEndian {
         case .littleEndian:
             return [
@@ -95,7 +95,7 @@ extension Int8: BinaryCompatible {
     }
     
     // TODO: untested
-    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+    public func binarize(byteOrder: ByteOrder?) -> [UInt8] {
         return [UInt8(bitPattern: self)]
     }
 }
@@ -117,7 +117,7 @@ extension Int16: BinaryCompatible {
     }
     
     // TODO: untested
-    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+    public func binarize(byteOrder: ByteOrder?) -> [UInt8] {
         switch byteOrder ?? .hostEndian {
         case .littleEndian:
             return [
@@ -150,7 +150,7 @@ extension Int32: BinaryCompatible {
     }
     
     // TODO: untested
-    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+    public func binarize(byteOrder: ByteOrder?) -> [UInt8] {
         switch byteOrder ?? .hostEndian {
         case .littleEndian:
             return [
@@ -175,7 +175,7 @@ extension Data: BinaryCompatible {
         self = Data(try stream.read(stream.available))
     }
     
-    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+    public func binarize(byteOrder: ByteOrder?) -> [UInt8] {
         var binary = [UInt8](repeating: 0, count: count)
         _ = binary.withUnsafeMutableBufferPointer {
             copyBytes(to: $0)
