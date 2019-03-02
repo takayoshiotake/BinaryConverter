@@ -21,6 +21,8 @@
 		12F9CAE2222A99FD00FD4BD9 /* ReadableByteStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F9CAE0222A99FD00FD4BD9 /* ReadableByteStream.swift */; };
 		12F9CAE4222A9AC600FD4BD9 /* ReadableByteStreamRefferedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F9CAE3222A9AC500FD4BD9 /* ReadableByteStreamRefferedArray.swift */; };
 		12F9CAE5222A9AC600FD4BD9 /* ReadableByteStreamRefferedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F9CAE3222A9AC500FD4BD9 /* ReadableByteStreamRefferedArray.swift */; };
+		12F9CAE7222AA33300FD4BD9 /* ReadableByteStreamRefferedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F9CAE6222AA33300FD4BD9 /* ReadableByteStreamRefferedData.swift */; };
+		12F9CAE8222AA33300FD4BD9 /* ReadableByteStreamRefferedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F9CAE6222AA33300FD4BD9 /* ReadableByteStreamRefferedData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,7 @@
 		12EA4B291DC5D377007E9CD9 /* +BinaryCompatible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "+BinaryCompatible.swift"; sourceTree = "<group>"; };
 		12F9CAE0222A99FD00FD4BD9 /* ReadableByteStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadableByteStream.swift; sourceTree = "<group>"; };
 		12F9CAE3222A9AC500FD4BD9 /* ReadableByteStreamRefferedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadableByteStreamRefferedArray.swift; sourceTree = "<group>"; };
+		12F9CAE6222AA33300FD4BD9 /* ReadableByteStreamRefferedData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadableByteStreamRefferedData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +120,7 @@
 				12EA4B291DC5D377007E9CD9 /* +BinaryCompatible.swift */,
 				12F9CAE0222A99FD00FD4BD9 /* ReadableByteStream.swift */,
 				12F9CAE3222A9AC500FD4BD9 /* ReadableByteStreamRefferedArray.swift */,
+				12F9CAE6222AA33300FD4BD9 /* ReadableByteStreamRefferedData.swift */,
 				123105B71DB13EBE0046A01C /* Info.plist */,
 			);
 			path = Sources;
@@ -317,6 +321,7 @@
 			files = (
 				12EA4B2A1DC5D377007E9CD9 /* +BinaryCompatible.swift in Sources */,
 				12F9CAE1222A99FD00FD4BD9 /* ReadableByteStream.swift in Sources */,
+				12F9CAE7222AA33300FD4BD9 /* ReadableByteStreamRefferedData.swift in Sources */,
 				12F9CAE4222A9AC600FD4BD9 /* ReadableByteStreamRefferedArray.swift in Sources */,
 				123105071DB120F20046A01C /* BinaryConverter.swift in Sources */,
 			);
@@ -336,6 +341,7 @@
 			files = (
 				12EA4B2B1DC5D462007E9CD9 /* +BinaryCompatible.swift in Sources */,
 				12F9CAE2222A99FD00FD4BD9 /* ReadableByteStream.swift in Sources */,
+				12F9CAE8222AA33300FD4BD9 /* ReadableByteStreamRefferedData.swift in Sources */,
 				12F9CAE5222A9AC600FD4BD9 /* ReadableByteStreamRefferedArray.swift in Sources */,
 				123105D41DB1E4910046A01C /* BinaryConverter.swift in Sources */,
 			);

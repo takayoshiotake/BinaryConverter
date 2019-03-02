@@ -75,8 +75,8 @@ class BinaryConverterTests: XCTestCase {
     
     func testConvertingBinaryIntoValues2() {
         // id: UInt8, asciiz: [CChar](count: 8)
-        let array = [0x01, 0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00] as [UInt8]
-        let values = try! BinaryConverter.convert(binary: array, layout: [("id", BinaryType(UInt8.self), nil), ("asciiz", BinaryType(CChar.self, count: 8), nil)])
+        let data = Data.init(bytes: [0x01, 0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00])
+        let values = try! BinaryConverter.convert(binary: ReadableByteStreamReferred(to: data), layout: [("id", BinaryType(UInt8.self), nil), ("asciiz", BinaryType(CChar.self, count: 8), nil)])
         XCTAssert(values["id"] is UInt8)
         XCTAssert(values["id"] as! UInt8 == 0x01)
         XCTAssert(values["asciiz"] is [CChar])
