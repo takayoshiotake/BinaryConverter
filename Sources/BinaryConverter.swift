@@ -24,11 +24,11 @@ public enum ByteOrder {
 }
 
 public protocol Binarizable {
-    func binarize(byteOrder: ByteOrder?) -> [UInt8]
+    func binarize(byteOrder: ByteOrder) -> [UInt8]
 }
 
 public protocol BinaryPersable {
-    init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws
+    init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws
 }
 
 public enum BinaryType {
@@ -110,7 +110,7 @@ public class BinaryConverter {
     }
     
     
-    public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryPersable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+    public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryPersable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
         for (key, type, byteOrder) in layout {
             result[key] = try type.init(parsing: stream, byteOrder: byteOrder ?? defaultByteOrder)
@@ -118,12 +118,12 @@ public class BinaryConverter {
         return result
     }
     
-    public class func parse<Key: Hashable>(binary referable: ReadableByteStreamReferable, layout: Array<(Key, BinaryPersable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+    public class func parse<Key: Hashable>(binary referable: ReadableByteStreamReferable, layout: Array<(Key, BinaryPersable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
         return try parse(binary: referable.makeReadableByteStream(), layout: layout, defaultByteOrder: defaultByteOrder)
     }
     
     
-    public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+    public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
         for (key, type, byteOrder) in layout {
             switch type {
@@ -142,17 +142,17 @@ public class BinaryConverter {
         return result
     }
     
-    public class func parse<Key: Hashable>(binary refarable: ReadableByteStreamReferable, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+    public class func parse<Key: Hashable>(binary refarable: ReadableByteStreamReferable, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
         return try parse(binary: refarable.makeReadableByteStream(), layout: layout, defaultByteOrder: defaultByteOrder)
     }
     
     // MARK: - Binarizing
     
-    public class func binarize(value: Binarizable, byteOrder: ByteOrder? = nil) -> [UInt8] {
+    public class func binarize(value: Binarizable, byteOrder: ByteOrder = ByteOrder.hostEndian) -> [UInt8] {
         return value.binarize(byteOrder: byteOrder)
     }
     
-    public class func binarize<T: Binarizable>(values: Array<T>, byteOrder: ByteOrder? = nil) -> [UInt8] {
+    public class func binarize<T: Binarizable>(values: Array<T>, byteOrder: ByteOrder = ByteOrder.hostEndian) -> [UInt8] {
         var binary: [UInt8] = []
         for value in values {
             binary.append(contentsOf: value.binarize(byteOrder: byteOrder))
@@ -161,7 +161,7 @@ public class BinaryConverter {
     }
     
     // FIXME: limit type of `mixedValues` to as like Array<Binarizable>, but `Array` can not inherit protocol with 'Element' constraints in Swift 3.0.x. And I want to remove the `throws`.
-    public class func binarize(mixedValues: Array<Any>, byteOrder: ByteOrder? = nil) throws -> [UInt8] {
+    public class func binarize(mixedValues: Array<Any>, byteOrder: ByteOrder = ByteOrder.hostEndian) throws -> [UInt8] {
         var binary: [UInt8] = []
         for unknownTypeValue in mixedValues {
             switch unknownTypeValue {

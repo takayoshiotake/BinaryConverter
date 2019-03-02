@@ -14,7 +14,7 @@ struct SimpleStructForTest {
 }
 
 extension SimpleStructForTest: Binarizable, BinaryPersable {
-    public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
+    public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
         let layout: [(String, BinaryPersable.Type, ByteOrder?)] = [
             ("id", UInt8.self, nil),
             ("count", UInt16.self, nil)]
@@ -22,7 +22,7 @@ extension SimpleStructForTest: Binarizable, BinaryPersable {
         self = SimpleStructForTest(id: converted["id"] as! UInt8, count: converted["count"] as! UInt16)
     }
     
-    public func binarize(byteOrder: ByteOrder?) -> [UInt8] {
+    public func binarize(byteOrder: ByteOrder) -> [UInt8] {
         return try! BinaryConverter.binarize(mixedValues: [id, count], byteOrder: byteOrder)
     }
 }
