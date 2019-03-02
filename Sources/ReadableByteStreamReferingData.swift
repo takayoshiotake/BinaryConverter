@@ -1,5 +1,5 @@
 //
-//  ReadableByteStreamRefferedArray.swift
+//  ReadableByteStreamReferingData.swift
 //  BinaryConverter
 //
 //  Created by OTAKE Takayoshi on 2019/03/02.
@@ -7,28 +7,28 @@
 
 import CoreFoundation
 
-/// Make `ReadableByteStream` referred to array (`ArraySlice<UInt8>`)
+/// Make `ReadableByteStream` refering `Data`
 ///
-/// - Parameter array: an array
+/// - Parameter data: data
 /// - Returns: a readable byte stream
-public func ReadableByteStreamReferred(to array: ArraySlice<UInt8>) -> ReadableByteStream {
-    return ByteStream(array)
+public func ReadableByteStreamRefering(_ data: Data) -> ReadableByteStream {
+    return ByteStream(data)
 }
 
 fileprivate class ByteStream : ReadableByteStream {
     
-    private let array: ArraySlice<UInt8>
+    private let data: Data
     
-    internal init(_ arraySlice: ArraySlice<UInt8>) {
-        self.array = arraySlice
-        currentIndex = array.startIndex
+    internal init(_ data: Data) {
+        self.data = data
+        currentIndex = 0
     }
     
     // MARK: ReadableByteStream
     
     public var available: Int {
         get {
-            return array.endIndex - currentIndex
+            return data.count - currentIndex
         }
     }
     
@@ -38,7 +38,7 @@ fileprivate class ByteStream : ReadableByteStream {
         guard available >= 1 else {
             throw BinaryConverterError.notAvailable
         }
-        let value = array[currentIndex]
+        let value = data[currentIndex]
         currentIndex += 1
         return value
     }
@@ -47,13 +47,17 @@ fileprivate class ByteStream : ReadableByteStream {
         guard available >= length else {
             throw BinaryConverterError.notAvailable
         }
-        let value = [UInt8](array[currentIndex ..< currentIndex + length])
+        // TODO: Be more smartly
+        var value = [UInt8].init(repeating: 0, count: length)
+        for i in 0 ..< length {
+            value[i] = data[currentIndex + i]
+        }
         currentIndex += length
         return value
     }
     
     public func moveIndex(to position: Int) {
-        currentIndex = array.startIndex + position
+        currentIndex = position
     }
     
     public func moveIndex(amount: Int) {
@@ -61,7 +65,7 @@ fileprivate class ByteStream : ReadableByteStream {
     }
     
     public subscript(index: Int) -> UInt8 {
-        return array[currentIndex + index]
+        return data[currentIndex + index]
     }
     
 }
