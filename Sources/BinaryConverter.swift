@@ -31,17 +31,15 @@ public protocol BinaryPersable {
     init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws
 }
 
-public protocol BinaryCompatible : Binarizable, BinaryPersable {}
-
 public enum BinaryType {
-    case type(type: BinaryCompatible.Type)
-    case fixedCountArray(type: BinaryCompatible.Type, count: Int)
+    case type(type: BinaryPersable.Type)
+    case fixedCountArray(type: BinaryPersable.Type, count: Int)
     
-    init(_ type: BinaryCompatible.Type) {
+    init(_ type: BinaryPersable.Type) {
         self = .type(type: type)
     }
     
-    init(_ type: BinaryCompatible.Type, count: Int) {
+    init(_ type: BinaryPersable.Type, count: Int) {
         self = .fixedCountArray(type: type, count: count)
     }
 }
@@ -59,12 +57,12 @@ public class BinaryConverter {
     // MARK: - Converting `[UInt8]` into `BinaryCompatible` value(s)
     
     /// Converts the `[UInt8]` into `T`, by reading the `binary`.
-    public class func parse<T: BinaryCompatible>(binary array: Array<UInt8>, byteOrder: ByteOrder? = nil) throws -> T {
+    public class func parse<T: BinaryPersable>(binary array: Array<UInt8>, byteOrder: ByteOrder? = nil) throws -> T {
         return try parse(binary: ReadableByteStreamRefering(array[0..<array.count]), byteOrder: byteOrder)
     }
     
     /// Converts the `[UInt8]` into `T`, by reading the `binary`.
-    public class func parse<T: BinaryCompatible>(binary arraySlice: ArraySlice<UInt8>, byteOrder: ByteOrder? = nil) throws -> T {
+    public class func parse<T: BinaryPersable>(binary arraySlice: ArraySlice<UInt8>, byteOrder: ByteOrder? = nil) throws -> T {
         return try parse(binary: ReadableByteStreamRefering(arraySlice), byteOrder: byteOrder)
     }
 
@@ -74,18 +72,18 @@ public class BinaryConverter {
     /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
     /// - returns: the value converted
     /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the binary
-    public class func parse<T: BinaryCompatible>(binary stream: ReadableByteStream, byteOrder: ByteOrder? = nil) throws -> T {
+    public class func parse<T: BinaryPersable>(binary stream: ReadableByteStream, byteOrder: ByteOrder? = nil) throws -> T {
         return try T(parsing: stream, byteOrder: byteOrder)
     }
     
     
     /// Converts the `[UInt8]` into `[T]`, by reading the `binary`.
-    public class func parse<T: BinaryCompatible>(binary array: Array<UInt8>, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
+    public class func parse<T: BinaryPersable>(binary array: Array<UInt8>, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
         return try parse(binary: ReadableByteStreamRefering(array[0..<array.count]), count: count, byteOrder: byteOrder)
     }
     
     /// Converts the `[UInt8]` into `[T]`, by reading the `binary`.
-    public class func parse<T: BinaryCompatible>(binary arraySlice: ArraySlice<UInt8>, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
+    public class func parse<T: BinaryPersable>(binary arraySlice: ArraySlice<UInt8>, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
         return try parse(binary: ReadableByteStreamRefering(arraySlice), count: count, byteOrder: byteOrder)
     }
     
@@ -96,7 +94,7 @@ public class BinaryConverter {
     /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
     /// - returns: the value converted
     /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the stream
-    public class func parse<T: BinaryCompatible>(binary stream: ReadableByteStream, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
+    public class func parse<T: BinaryPersable>(binary stream: ReadableByteStream, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
         var value = [] as [T]
         for _ in 0..<count {
             value.append(try T(parsing: stream, byteOrder: byteOrder))
@@ -105,15 +103,15 @@ public class BinaryConverter {
     }
     
     
-    public class func parse<Key: Hashable>(binary array: Array<UInt8>, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+    public class func parse<Key: Hashable>(binary array: Array<UInt8>, layout: Array<(Key, BinaryPersable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
         return try parse(binary: ReadableByteStreamRefering(array[0..<array.count]), layout: layout, defaultByteOrder: defaultByteOrder)
     }
     
-    public class func parse<Key: Hashable>(binary arraySlice: ArraySlice<UInt8>, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+    public class func parse<Key: Hashable>(binary arraySlice: ArraySlice<UInt8>, layout: Array<(Key, BinaryPersable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
         return try parse(binary: ReadableByteStreamRefering(arraySlice), layout: layout, defaultByteOrder: defaultByteOrder)
     }
     
-    public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+    public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryPersable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
         for (key, type, byteOrder) in layout {
             result[key] = try type.init(parsing: stream, byteOrder: byteOrder ?? defaultByteOrder)
@@ -168,9 +166,9 @@ public class BinaryConverter {
         var binary: [UInt8] = []
         for unknownTypeValue in mixedValues {
             switch unknownTypeValue {
-            case let value as BinaryCompatible:
+            case let value as Binarizable:
                 binary.append(contentsOf: binarize(value: value, byteOrder: byteOrder))
-            case let values as Array<BinaryCompatible>:
+            case let values as Array<Binarizable>:
                 #if false
                     // Error: in Swift 3.0.x
                     array.append(contentsOf: binarize(values: values, byteOrder: byteOrder))

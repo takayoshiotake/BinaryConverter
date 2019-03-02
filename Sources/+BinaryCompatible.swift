@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension UInt8: BinaryCompatible {
+extension UInt8: Binarizable, BinaryPersable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
         self = try stream.read()
     }
@@ -19,7 +19,7 @@ extension UInt8: BinaryCompatible {
     }
 }
 
-extension UInt16: BinaryCompatible {
+extension UInt16: Binarizable, BinaryPersable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
         var buffer = try stream.read(2)
         let value = withUnsafePointer(to: &buffer[0]) {
@@ -52,7 +52,7 @@ extension UInt16: BinaryCompatible {
     }
 }
 
-extension UInt32: BinaryCompatible {
+extension UInt32: Binarizable, BinaryPersable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
         var buffer = try stream.read(4)
         let value = withUnsafePointer(to: &buffer[0]) {
@@ -89,7 +89,7 @@ extension UInt32: BinaryCompatible {
     }
 }
 
-extension Int8: BinaryCompatible {
+extension Int8: Binarizable, BinaryPersable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
         self = Int8(bitPattern: try stream.read())
     }
@@ -100,7 +100,7 @@ extension Int8: BinaryCompatible {
     }
 }
 
-extension Int16: BinaryCompatible {
+extension Int16: Binarizable, BinaryPersable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
         var buffer = try stream.read(2)
         let value = withUnsafePointer(to: &buffer[0]) {
@@ -133,7 +133,7 @@ extension Int16: BinaryCompatible {
     }
 }
 
-extension Int32: BinaryCompatible {
+extension Int32: Binarizable, BinaryPersable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
         var buffer = try stream.read(4)
         let value = withUnsafePointer(to: &buffer[0]) {
@@ -170,7 +170,7 @@ extension Int32: BinaryCompatible {
     }
 }
 
-extension Data: BinaryCompatible {
+extension Data: Binarizable, BinaryPersable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
         self = Data(try stream.read(stream.available))
     }
