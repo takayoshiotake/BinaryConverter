@@ -30,6 +30,10 @@ extension SimpleStructForTest: BinaryCompatible {
 
 class BinaryConverterTests: XCTestCase {
     
+    func testByteOrderOfHost() {
+        print("Info: ByteOrder.hostEndian=\(ByteOrder.hostEndian)")
+    }
+    
     func testConvertingLittleEndianIntoValue() {
         let result = try! BinaryConverter.convert(binary: [0x80, 0x00], byteOrder: .littleEndian) as Int16
         XCTAssert(result == 128)

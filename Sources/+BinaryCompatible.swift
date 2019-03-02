@@ -27,7 +27,7 @@ extension UInt16: BinaryCompatible {
                 $0[0]
             }
         }
-        switch byteOrder ?? defaultByteOrder {
+        switch byteOrder ?? .hostEndian {
         case .littleEndian:
             self = UInt16(littleEndian: value)
         case .bigEndian:
@@ -37,7 +37,7 @@ extension UInt16: BinaryCompatible {
     
     // TODO: untested
     public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
-        switch byteOrder ?? defaultByteOrder {
+        switch byteOrder ?? .hostEndian {
         case .littleEndian:
             return [
                 UInt8(self >> 0 & 0xff),
@@ -60,7 +60,7 @@ extension UInt32: BinaryCompatible {
                 $0[0]
             }
         }
-        switch byteOrder ?? defaultByteOrder {
+        switch byteOrder ?? .hostEndian {
         case .littleEndian:
             self = UInt32(littleEndian: value)
         case .bigEndian:
@@ -70,7 +70,7 @@ extension UInt32: BinaryCompatible {
     
     // TODO: untested
     public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
-        switch byteOrder ?? defaultByteOrder {
+        switch byteOrder ?? .hostEndian {
         case .littleEndian:
             return [
                 UInt8(self >> 0 & 0xff),
@@ -108,7 +108,7 @@ extension Int16: BinaryCompatible {
                 $0[0]
             }
         }
-        switch byteOrder ?? defaultByteOrder {
+        switch byteOrder ?? .hostEndian {
         case .littleEndian:
             self = Int16(littleEndian: value)
         case .bigEndian:
@@ -118,7 +118,7 @@ extension Int16: BinaryCompatible {
     
     // TODO: untested
     public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
-        switch byteOrder ?? defaultByteOrder {
+        switch byteOrder ?? .hostEndian {
         case .littleEndian:
             return [
                 UInt8(self >> 0 & 0xff),
@@ -141,7 +141,7 @@ extension Int32: BinaryCompatible {
                 $0[0]
             }
         }
-        switch byteOrder ?? defaultByteOrder {
+        switch byteOrder ?? .hostEndian {
         case .littleEndian:
             self = Int32(littleEndian: value)
         case .bigEndian:
@@ -151,7 +151,7 @@ extension Int32: BinaryCompatible {
     
     // TODO: untested
     public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
-        switch byteOrder ?? defaultByteOrder {
+        switch byteOrder ?? .hostEndian {
         case .littleEndian:
             return [
                 UInt8(self >> 0 & 0xff),

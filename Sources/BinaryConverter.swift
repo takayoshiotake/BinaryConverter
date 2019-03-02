@@ -8,8 +8,6 @@
 
 import Foundation
 
-public let defaultByteOrder = ByteOrder.littleEndian
-
 public enum BinaryConverterError: Error {
     case streamIsShort
     case notSupportedType
@@ -18,6 +16,12 @@ public enum BinaryConverterError: Error {
 public enum ByteOrder {
     case littleEndian
     case bigEndian
+    
+    static var hostEndian: ByteOrder {
+        get {
+            return CFByteOrderGetCurrent() == Int(CFByteOrderBigEndian.rawValue) ? .bigEndian : .littleEndian
+        }
+    }
 }
 
 public protocol BinaryCompatible {
