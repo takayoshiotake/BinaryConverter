@@ -16,7 +16,7 @@ public enum ByteOrder {
     case littleEndian
     case bigEndian
     
-    static var hostEndian: ByteOrder {
+    public static var hostEndian: ByteOrder {
         get {
             return CFByteOrderGetCurrent() == Int(CFByteOrderBigEndian.rawValue) ? .bigEndian : .littleEndian
         }
@@ -35,11 +35,11 @@ public enum BinaryType {
     case type(type: BinaryPersable.Type)
     case fixedCountArray(type: BinaryPersable.Type, count: Int)
     
-    init(_ type: BinaryPersable.Type) {
+    public init(_ type: BinaryPersable.Type) {
         self = .type(type: type)
     }
     
-    init(_ type: BinaryPersable.Type, count: Int) {
+    public init(_ type: BinaryPersable.Type, count: Int) {
         self = .fixedCountArray(type: type, count: count)
     }
 }

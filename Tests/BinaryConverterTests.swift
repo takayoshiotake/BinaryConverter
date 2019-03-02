@@ -7,7 +7,8 @@
 //
 
 import XCTest
-@testable import BinaryConverter
+//@testable import BinaryConverter
+import BinaryConverter
 
 struct SimpleStructForTest {
     let id: UInt8
