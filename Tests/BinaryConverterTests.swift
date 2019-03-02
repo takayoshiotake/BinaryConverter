@@ -15,7 +15,7 @@ struct SimpleStructForTest {
 }
 
 extension SimpleStructForTest: BinaryCompatible {
-    public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
+    public init(stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
         let layout: [(String, BinaryCompatible.Type, ByteOrder?)] = [
             ("id", UInt8.self, nil),
             ("count", UInt16.self, nil)]
@@ -90,7 +90,7 @@ class BinaryConverterTests: XCTestCase {
     
     func testConvertingCustomStructIntoValue() {
         let array = [0x10, 0x00, 0x08] as [UInt8]
-        let stream = BinaryStream(array[0...2])
+        let stream = ReadableByteStreamReferred(to: array[0...2])
         let values = try! BinaryConverter.convert(binary: stream, byteOrder: .bigEndian) as SimpleStructForTest
         XCTAssert(values.id == 0x10)
         XCTAssert(values.count == 8)
