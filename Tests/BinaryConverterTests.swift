@@ -15,7 +15,7 @@ struct SimpleStructForTest {
 }
 
 extension SimpleStructForTest: BinaryCompatible {
-    public init(stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
+    public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws {
         let layout: [(String, BinaryCompatible.Type, ByteOrder?)] = [
             ("id", UInt8.self, nil),
             ("count", UInt16.self, nil)]

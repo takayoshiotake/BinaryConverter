@@ -27,9 +27,11 @@ public protocol Binarizable {
     func binarize(byteOrder: ByteOrder?) -> [UInt8]
 }
 
-public protocol BinaryCompatible : Binarizable {
-    init(stream: ReadableByteStream, byteOrder: ByteOrder?) throws
+public protocol BinaryPersable {
+    init(parsing stream: ReadableByteStream, byteOrder: ByteOrder?) throws
 }
+
+public protocol BinaryCompatible : Binarizable, BinaryPersable {}
 
 public enum BinaryType {
     case type(type: BinaryCompatible.Type)
@@ -73,7 +75,7 @@ public class BinaryConverter {
     /// - returns: the value converted
     /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the binary
     public class func convert<T: BinaryCompatible>(binary stream: ReadableByteStream, byteOrder: ByteOrder? = nil) throws -> T {
-        return try T(stream: stream, byteOrder: byteOrder)
+        return try T(parsing: stream, byteOrder: byteOrder)
     }
     
     
@@ -97,7 +99,7 @@ public class BinaryConverter {
     public class func convert<T: BinaryCompatible>(binary stream: ReadableByteStream, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
         var value = [] as [T]
         for _ in 0..<count {
-            value.append(try T(stream: stream, byteOrder: byteOrder))
+            value.append(try T(parsing: stream, byteOrder: byteOrder))
         }
         return value
     }
@@ -114,7 +116,7 @@ public class BinaryConverter {
     public class func convert<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryCompatible.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
         for (key, type, byteOrder) in layout {
-            result[key] = try type.init(stream: stream, byteOrder: byteOrder ?? defaultByteOrder)
+            result[key] = try type.init(parsing: stream, byteOrder: byteOrder ?? defaultByteOrder)
         }
         return result
     }
@@ -133,12 +135,12 @@ public class BinaryConverter {
         for (key, type, byteOrder) in layout {
             switch type {
             case .type(let type):
-                result[key] = try type.init(stream: stream, byteOrder: byteOrder ?? defaultByteOrder)
+                result[key] = try type.init(parsing: stream, byteOrder: byteOrder ?? defaultByteOrder)
                 break
             case .fixedCountArray(let type, let count):
                 var array = [] as [Any]
                 for _ in 0..<count {
-                    array.append(try type.init(stream: stream, byteOrder: byteOrder ?? defaultByteOrder))
+                    array.append(try type.init(parsing: stream, byteOrder: byteOrder ?? defaultByteOrder))
                 }
                 result[key] = array
                 break
