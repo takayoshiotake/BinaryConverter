@@ -9,7 +9,7 @@
 import Foundation
 
 public enum BinaryConverterError: Error {
-    case streamIsShort
+    case notAvailable
     case notSupportedType
 }
 
@@ -42,15 +42,58 @@ public enum BinaryType {
     }
 }
 
-public class BinaryStream {
+/// Data reading in byte units
+public protocol ByteReader {
+    
+    /// Available bytes count to read
+    var available: Int { get }
+    
+    /// Current index points a next byte read
+    var currentIndex: Int { get }
+    
+    /// Read a byte at `currentIndex`, and increment `currentIndex`
+    ///
+    /// - Returns: a byte read
+    /// - Throws:
+    ///   - BinaryConverterError.notAvailable: when `available == 0`
+    func read() throws -> UInt8
+    
+    /// Read bytes from `currentIndex`
+    ///
+    /// - Throws:
+    ///   - BinaryConverterError.notAvailable: when `available < ammount`
+    func read(_ length: Int) throws -> [UInt8]
+    
+    /// Get a byte
+    ///
+    /// - Parameter index: points the position of the byte to be referred, is based on `currentIndex`
+    subscript(index: Int) -> UInt8 { get }
+    
+    /// Move `currentIndex` to specified position
+    ///
+    /// - Parameter position: next position to read
+    /// - Throws:
+    ///   - BinaryConverterError.outOfRange:
+    func moveIndex(to position: Int) throws
+    
+    /// Move `currentIndex` by specified amount
+    ///
+    /// - Parameter amount: bytes count
+    /// - Throws:
+    ///   - BinaryConverterError.outOfRange:
+    func moveIndex(amount: Int) throws
+}
+
+public class BinaryStream : ByteReader {
+    
     public let binary: ArraySlice<UInt8>
-    public var currentIndex: Int
+    
+    public private(set) var currentIndex: Int
     
     public init(_ arraySlice: ArraySlice<UInt8>) {
         self.binary = arraySlice
         currentIndex = binary.startIndex
     }
-    
     
     public var available: Int {
         get {
@@ -58,53 +101,36 @@ public class BinaryStream {
         }
     }
     
-    // mutating
     public func read() throws -> UInt8 {
         guard available >= 1 else {
-            throw BinaryConverterError.streamIsShort
+            throw BinaryConverterError.notAvailable
         }
         let value = binary[currentIndex]
         currentIndex += 1
         return value
     }
     
-    // mutating
-    public func readBytes(length: Int) throws -> [UInt8] {
+    public func read(_ length: Int) throws -> [UInt8] {
         guard available >= length else {
-            throw BinaryConverterError.streamIsShort
+            throw BinaryConverterError.notAvailable
         }
-        let value = [UInt8](binary[currentIndex..<currentIndex + length])
+        let value = [UInt8](binary[currentIndex ..< currentIndex + length])
         currentIndex += length
         return value
     }
     
-    // mutating
-    public func moveIndex(to index: Int) {
-        currentIndex = binary.startIndex + index
+    public func moveIndex(to position: Int) {
+        currentIndex = binary.startIndex + position
     }
     
-    // mutating
-    public func skipBytes(length: Int) {
-        currentIndex += length
+    public func moveIndex(amount: Int) {
+        currentIndex += amount
     }
     
-    // nonmutating read
     public subscript(index: Int) -> UInt8 {
         return binary[currentIndex + index]
     }
 
-    // nonmutating readBytes (1)
-    public subscript(range: Range<Int>) -> ArraySlice<UInt8> {
-        let currentBaseRange = currentIndex+range.lowerBound..<currentIndex+range.upperBound
-        return binary[currentBaseRange]
-    }
-
-    // nonmutating readBytes (2)
-    public subscript(range: ClosedRange<Int>) -> ArraySlice<UInt8> {
-        let currentBaseRange = currentIndex+range.lowerBound...currentIndex+range.upperBound
-        return binary[currentBaseRange]
-    }
-    
 }
 
 /// Converts the `[UInt8]` into `BinaryCompatible` value(s), by reading the `Array<UInt8>`, `ArraySlice<UInt8>` or `BinaryStream`.

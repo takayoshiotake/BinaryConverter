@@ -21,7 +21,7 @@ extension UInt8: BinaryCompatible {
 
 extension UInt16: BinaryCompatible {
     public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
-        var buffer = try stream.readBytes(length: 2)
+        var buffer = try stream.read(2)
         let value = withUnsafePointer(to: &buffer[0]) {
             $0.withMemoryRebound(to: UInt16.self, capacity: 1) {
                 $0[0]
@@ -54,7 +54,7 @@ extension UInt16: BinaryCompatible {
 
 extension UInt32: BinaryCompatible {
     public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
-        var buffer = try stream.readBytes(length: 4)
+        var buffer = try stream.read(4)
         let value = withUnsafePointer(to: &buffer[0]) {
             $0.withMemoryRebound(to: UInt32.self, capacity: 1) {
                 $0[0]
@@ -102,7 +102,7 @@ extension Int8: BinaryCompatible {
 
 extension Int16: BinaryCompatible {
     public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
-        var buffer = try stream.readBytes(length: 2)
+        var buffer = try stream.read(2)
         let value = withUnsafePointer(to: &buffer[0]) {
             $0.withMemoryRebound(to: Int16.self, capacity: 1) {
                 $0[0]
@@ -135,7 +135,7 @@ extension Int16: BinaryCompatible {
 
 extension Int32: BinaryCompatible {
     public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
-        var buffer = try stream.readBytes(length: 4)
+        var buffer = try stream.read(4)
         let value = withUnsafePointer(to: &buffer[0]) {
             $0.withMemoryRebound(to: Int32.self, capacity: 1) {
                 $0[0]
