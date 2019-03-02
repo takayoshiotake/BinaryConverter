@@ -53,3 +53,10 @@ public protocol ReadableByteStream {
     func moveIndex(amount: Int) throws
 }
 
+public protocol ReadableByteStreamReferable {
+    
+    /// Make `ReadableByteStream` refering `self`
+    ///
+    /// - Returns: a readable byte stream
+    func makeReadableByteStream() -> ReadableByteStream
+}

@@ -7,12 +7,10 @@
 
 import CoreFoundation
 
-/// Make `ReadableByteStream` refering `Data`
-///
-/// - Parameter data: data
-/// - Returns: a readable byte stream
-public func ReadableByteStreamRefering(_ data: Data) -> ReadableByteStream {
-    return ByteStream(data)
+extension Data : ReadableByteStreamReferable {
+    public func makeReadableByteStream() -> ReadableByteStream {
+        return ByteStream(self)
+    }
 }
 
 fileprivate class ByteStream : ReadableByteStream {

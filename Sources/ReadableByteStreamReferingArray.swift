@@ -7,21 +7,17 @@
 
 import CoreFoundation
 
-/// Make `ReadableByteStream` refering `[UInt8]`
-///
-/// - Parameter array: an array
-/// - Returns: a readable byte stream
-public func ReadableByteStreamRefering(_ array: [UInt8]) -> ReadableByteStream {
-    // [UInt8] -> ArraySlice<UInt8>
-    return ByteStream(array[0 ..< array.count])
+extension Array : ReadableByteStreamReferable where Element == UInt8 {
+    public func makeReadableByteStream() -> ReadableByteStream {
+        // [UInt8] -> ArraySlice<UInt8>
+        return ByteStream(self[0 ..< count])
+    }
 }
 
-/// Make `ReadableByteStream` refering `ArraySlice<UInt8>`
-///
-/// - Parameter arraySlice: an array slice
-/// - Returns: a readable byte stream
-public func ReadableByteStreamRefering(_ arraySlice: ArraySlice<UInt8>) -> ReadableByteStream {
-    return ByteStream(arraySlice)
+extension ArraySlice : ReadableByteStreamReferable where Element == UInt8 {
+    public func makeReadableByteStream() -> ReadableByteStream {
+        return ByteStream(self)
+    }
 }
 
 fileprivate class ByteStream : ReadableByteStream {

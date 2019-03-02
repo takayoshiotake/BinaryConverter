@@ -76,7 +76,7 @@ class BinaryConverterTests: XCTestCase {
     func testConvertingBinaryIntoValues2() {
         // id: UInt8, asciiz: [CChar](count: 8)
         let data = Data.init(bytes: [0x01, 0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00])
-        let values = try! BinaryConverter.parse(binary: ReadableByteStreamRefering(data), layout: [("id", BinaryType(UInt8.self), nil), ("asciiz", BinaryType(CChar.self, count: 8), nil)])
+        let values = try! BinaryConverter.parse(binary: data, layout: [("id", BinaryType(UInt8.self), nil), ("asciiz", BinaryType(CChar.self, count: 8), nil)])
         XCTAssert(values["id"] is UInt8)
         XCTAssert(values["id"] as! UInt8 == 0x01)
         XCTAssert(values["asciiz"] is [CChar])
@@ -90,8 +90,7 @@ class BinaryConverterTests: XCTestCase {
     
     func testConvertingCustomStructIntoValue() {
         let array = [0x10, 0x00, 0x08] as [UInt8]
-        let stream = ReadableByteStreamRefering(array[0...2])
-        let values = try! BinaryConverter.parse(binary: stream, byteOrder: .bigEndian) as SimpleStructForTest
+        let values = try! BinaryConverter.parse(binary: array, byteOrder: .bigEndian) as SimpleStructForTest
         XCTAssert(values.id == 0x10)
         XCTAssert(values.count == 8)
     }
