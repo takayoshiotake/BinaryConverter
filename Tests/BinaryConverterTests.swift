@@ -44,6 +44,12 @@ class BinaryConverterTests: XCTestCase {
         XCTAssert(result == -32768)
     }
     
+    func testConvertingBinaryIntoData() {
+        let binary = [0x01, 0x02, 0x03, 0x04, 0xAA, 0x55, 0xFF, 0x00] as [UInt8]
+        let result = try! BinaryConverter.convert(binary: binary) as Data
+        XCTAssert(binary == BinaryConverter.convert(value: result))
+    }
+    
     func testConvertingFixedArrayIntoValue() {
         let asciiz8 = [0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00] as [UInt8]
         XCTAssert(asciiz8.count == 8)

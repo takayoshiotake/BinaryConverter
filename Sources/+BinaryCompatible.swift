@@ -170,3 +170,16 @@ extension Int32: BinaryCompatible {
     }
 }
 
+extension Data: BinaryCompatible {
+    public init(stream: BinaryStream, byteOrder: ByteOrder?) throws {
+        self = Data(try stream.read(stream.available))
+    }
+    
+    public func convertIntoBinary(byteOrder: ByteOrder?) -> [UInt8] {
+        var binary = [UInt8](repeating: 0, count: count)
+        _ = binary.withUnsafeMutableBufferPointer {
+            copyBytes(to: $0)
+        }
+        return binary
+    }
+}
