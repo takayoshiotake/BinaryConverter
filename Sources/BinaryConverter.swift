@@ -44,47 +44,59 @@ public enum BinaryType {
     }
 }
 
-/// Converts the `[UInt8]` into `BinaryCompatible` value(s), by reading the `Array<UInt8>`, `ArraySlice<UInt8>` or `BinaryStream`.
-/// And converts the `BinaryCompatible` value(s) into `[UInt8]`.
+/// Converts binary and value(s)
 ///
-/// Converting example:
+/// Data type can convert from binary are required adopting `BinaryPersable` protocol. If you want to adopt it for your data type, +BinaryCompatible.swift will be helpful you as example code.
+///
+/// Similarly, for converting value(s) to binary, it's type is required adopting `Binarizable`.
+///
+/// Summary of the above:
+/// - BinaryPersable -> value(s)
+/// - Binarizable -> binary
+///
+/// ---
+/// In default, we support `[UInt8]`, `ArraySlice<UInt8>` and `Data` as the binary. If you want to use other one, you need to a new class that adopts ReadableByteStream. ReadableByteStreamRefering*.swift will be helpful for you.
+///
+/// ---
+/// A simple example of converting:
 /// 
 ///     // Get a Int16 value from [UInt8]
-///     BinaryConverter.convert(array: [0x80, 0x00], byteOrder: .little) as Int16 // returns 128
+///     BinaryConverter.parse(binary: [0x80, 0x00], byteOrder: .little) as Int16 // returns 128
 ///
+/// More example codes are in my tests code: BinaryConverterTests.swift.
 public class BinaryConverter {
     
-    // MARK: - Converting `[UInt8]` into `BinaryCompatible` value(s)
+    // MARK: - Parsing binary
     
-    /// Converts the `[UInt8]` into `T`, by reading the `binary`.
-    public class func parse<T: BinaryPersable>(binary referable: ReadableByteStreamReferable, byteOrder: ByteOrder? = nil) throws -> T {
-        return try parse(binary: referable.makeReadableByteStream(), byteOrder: byteOrder)
-    }
-
-    /// Converts the `[UInt8]` into `T`, by reading the `binary`.
+    /// Parses the binary into `T`
+    /// - Tag: BinaryConverter.parseBinaryIntoT
     ///
-    /// - parameter binary: this is containing the converting value
-    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
-    /// - returns: the value converted
-    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the binary
-    public class func parse<T: BinaryPersable>(binary stream: ReadableByteStream, byteOrder: ByteOrder? = nil) throws -> T {
+    /// - Note: Depending on the data type of `refarable`, there is a possibility of referring without holding `refarable` during parsing, so you should keep it on memory.
+    ///
+    /// - Parameters:
+    ///   - stream: will be read
+    ///   - byteOrder: default is ByteOrder.hostEndian
+    /// - Returns: a value parsed
+    /// - Throws: <#throws value description#>
+    public class func parse<T: BinaryPersable>(binary stream: ReadableByteStream, byteOrder: ByteOrder = ByteOrder.hostEndian) throws -> T {
         return try T(parsing: stream, byteOrder: byteOrder)
     }
     
-    
-    /// Converts the `[UInt8]` into `[T]`, by reading the `binary`.
-    public class func parse<T: BinaryPersable>(binary referable: ReadableByteStreamReferable, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
-        return try parse(binary: referable.makeReadableByteStream(), count: count, byteOrder: byteOrder)
+    /// See also [class func parse<T: BinaryPersable>(binary stream: ReadableByteStream, byteOrder: ByteOrder) throws -> T](x-source-tag://BinaryConverter.parseBinaryIntoT)
+    public class func parse<T: BinaryPersable>(binary referable: ReadableByteStreamReferable, byteOrder: ByteOrder = ByteOrder.hostEndian) throws -> T {
+        return try parse(binary: referable.makeReadableByteStream(), byteOrder: byteOrder)
     }
     
-    /// Converts the `[UInt8]` into `[T]`, by reading the `binary`.
+    /// Parses the binary into value(s) as `[T]`
+    /// - Tag: BinaryConverter.parseBinaryIntoTArray
     ///
-    /// - parameter stream: this is containing the converting values
-    /// - parameter count: the count of the converting values
-    /// - parameter byteOrder: the byte order of the converting value; default is `nil` (optional)
-    /// - returns: the value converted
-    /// - throws: BinaryConverterError.streamIsShort: Could not read the value from the stream
-    public class func parse<T: BinaryPersable>(binary stream: ReadableByteStream, count: Int, byteOrder: ByteOrder? = nil) throws -> [T] {
+    /// - Parameters:
+    ///   - stream: will be read
+    ///   - count: of values to read
+    ///   - byteOrder: default is ByteOrder.hostEndian
+    /// - Returns: a value(s) parsed
+    /// - Throws: <#throws value description#>
+    public class func parse<T: BinaryPersable>(binary stream: ReadableByteStream, count: Int, byteOrder: ByteOrder = ByteOrder.hostEndian) throws -> [T] {
         var value = [] as [T]
         for _ in 0..<count {
             value.append(try T(parsing: stream, byteOrder: byteOrder))
@@ -92,10 +104,11 @@ public class BinaryConverter {
         return value
     }
     
-    
-    public class func parse<Key: Hashable>(binary referable: ReadableByteStreamReferable, layout: Array<(Key, BinaryPersable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
-        return try parse(binary: referable.makeReadableByteStream(), layout: layout, defaultByteOrder: defaultByteOrder)
+    /// See also [class func parse<T: BinaryPersable>(binary stream: ReadableByteStream, count: Int, byteOrder: ByteOrder) throws -> [T]) throws -> T](x-source-tag://BinaryConverter.parseBinaryIntoTArray)
+    public class func parse<T: BinaryPersable>(binary referable: ReadableByteStreamReferable, count: Int, byteOrder: ByteOrder = ByteOrder.hostEndian) throws -> [T] {
+        return try parse(binary: referable.makeReadableByteStream(), count: count, byteOrder: byteOrder)
     }
+    
     
     public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryPersable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
@@ -104,11 +117,11 @@ public class BinaryConverter {
         }
         return result
     }
-
     
-    public class func parse<Key: Hashable>(binary refarable: ReadableByteStreamReferable, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
-        return try parse(binary: refarable.makeReadableByteStream(), layout: layout, defaultByteOrder: defaultByteOrder)
+    public class func parse<Key: Hashable>(binary referable: ReadableByteStreamReferable, layout: Array<(Key, BinaryPersable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+        return try parse(binary: referable.makeReadableByteStream(), layout: layout, defaultByteOrder: defaultByteOrder)
     }
+    
     
     public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
@@ -129,7 +142,11 @@ public class BinaryConverter {
         return result
     }
     
-    // MARK: - Binarizing `BinaryCompatible` value(s) into `[UInt8]`
+    public class func parse<Key: Hashable>(binary refarable: ReadableByteStreamReferable, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder? = nil) throws -> Dictionary<Key, Any> {
+        return try parse(binary: refarable.makeReadableByteStream(), layout: layout, defaultByteOrder: defaultByteOrder)
+    }
+    
+    // MARK: - Binarizing
     
     public class func binarize(value: Binarizable, byteOrder: ByteOrder? = nil) -> [UInt8] {
         return value.binarize(byteOrder: byteOrder)

@@ -52,7 +52,7 @@ class BinaryConverterTests: XCTestCase {
     func testConvertingFixedArrayIntoValue() {
         let asciiz8 = [0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00] as [UInt8]
         XCTAssert(asciiz8.count == 8)
-        var result = try! BinaryConverter.parse(binary: asciiz8, count: asciiz8.count, byteOrder: nil) as [CChar]
+        var result = try! BinaryConverter.parse(binary: asciiz8, count: asciiz8.count) as [CChar]
         XCTAssert(result.count == 8)
         let str = withUnsafePointer(to: &result[0]) {
             String(cString: $0)
