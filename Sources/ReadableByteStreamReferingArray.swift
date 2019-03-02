@@ -7,12 +7,21 @@
 
 import CoreFoundation
 
-/// Make `ReadableByteStream` refering array (`ArraySlice<UInt8>`)
+/// Make `ReadableByteStream` refering `[UInt8]`
 ///
 /// - Parameter array: an array
 /// - Returns: a readable byte stream
-public func ReadableByteStreamRefering(_ array: ArraySlice<UInt8>) -> ReadableByteStream {
-    return ByteStream(array)
+public func ReadableByteStreamRefering(_ array: [UInt8]) -> ReadableByteStream {
+    // [UInt8] -> ArraySlice<UInt8>
+    return ByteStream(array[0 ..< array.count])
+}
+
+/// Make `ReadableByteStream` refering `ArraySlice<UInt8>`
+///
+/// - Parameter arraySlice: an array slice
+/// - Returns: a readable byte stream
+public func ReadableByteStreamRefering(_ arraySlice: ArraySlice<UInt8>) -> ReadableByteStream {
+    return ByteStream(arraySlice)
 }
 
 fileprivate class ByteStream : ReadableByteStream {
@@ -36,7 +45,7 @@ fileprivate class ByteStream : ReadableByteStream {
     
     public func read() throws -> UInt8 {
         guard available >= 1 else {
-            throw BinaryConverterError.notAvailable
+            throw ReadableByteStreamError.notAvailable
         }
         let value = array[currentIndex]
         currentIndex += 1
@@ -45,7 +54,7 @@ fileprivate class ByteStream : ReadableByteStream {
     
     public func read(_ length: Int) throws -> [UInt8] {
         guard available >= length else {
-            throw BinaryConverterError.notAvailable
+            throw ReadableByteStreamError.notAvailable
         }
         let value = [UInt8](array[currentIndex ..< currentIndex + length])
         currentIndex += length

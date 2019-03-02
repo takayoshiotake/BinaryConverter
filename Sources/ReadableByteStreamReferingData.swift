@@ -36,7 +36,7 @@ fileprivate class ByteStream : ReadableByteStream {
     
     public func read() throws -> UInt8 {
         guard available >= 1 else {
-            throw BinaryConverterError.notAvailable
+            throw ReadableByteStreamError.notAvailable
         }
         let value = data[currentIndex]
         currentIndex += 1
@@ -45,7 +45,7 @@ fileprivate class ByteStream : ReadableByteStream {
     
     public func read(_ length: Int) throws -> [UInt8] {
         guard available >= length else {
-            throw BinaryConverterError.notAvailable
+            throw ReadableByteStreamError.notAvailable
         }
         // TODO: Be more smartly
         var value = [UInt8].init(repeating: 0, count: length)

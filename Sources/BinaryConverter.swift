@@ -9,7 +9,6 @@
 import CoreFoundation
 
 public enum BinaryConverterError: Error {
-    case notAvailable
     case notSupportedType
 }
 

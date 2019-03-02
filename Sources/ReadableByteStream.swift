@@ -7,6 +7,10 @@
 
 import CoreFoundation
 
+public enum ReadableByteStreamError: Error {
+    case notAvailable
+}
+
 /// Data reading in byte units
 public protocol ReadableByteStream {
     
@@ -20,13 +24,13 @@ public protocol ReadableByteStream {
     ///
     /// - Returns: a byte read
     /// - Throws:
-    ///   - BinaryConverterError.notAvailable: when `available == 0`
+    ///   - ReadableByteStreamError.notAvailable: when `available == 0`
     func read() throws -> UInt8
     
     /// Read bytes from `currentIndex`
     ///
     /// - Throws:
-    ///   - BinaryConverterError.notAvailable: when `available < ammount`
+    ///   - ReadableByteStreamError.notAvailable: when `available < ammount`
     func read(_ length: Int) throws -> [UInt8]
     
     /// Get a byte
