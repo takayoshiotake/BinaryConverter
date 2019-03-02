@@ -4,10 +4,8 @@
 //
 //  Created by OTAKE Takayoshi on 2016/10/29.
 //
-//
 
 import XCTest
-//@testable import BinaryConverter
 import BinaryConverter
 
 struct SimpleStructForTest {

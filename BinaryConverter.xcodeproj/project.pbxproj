@@ -23,6 +23,8 @@
 		12F9CAE5222A9AC600FD4BD9 /* ReadableByteStreamReferingArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F9CAE3222A9AC500FD4BD9 /* ReadableByteStreamReferingArray.swift */; };
 		12F9CAE7222AA33300FD4BD9 /* ReadableByteStreamReferingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F9CAE6222AA33300FD4BD9 /* ReadableByteStreamReferingData.swift */; };
 		12F9CAE8222AA33300FD4BD9 /* ReadableByteStreamReferingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F9CAE6222AA33300FD4BD9 /* ReadableByteStreamReferingData.swift */; };
+		12F9CAEC222AC2D400FD4BD9 /* BinaryConverterInternalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F9CAE9222AC2C700FD4BD9 /* BinaryConverterInternalTests.swift */; };
+		12F9CAED222AC2D500FD4BD9 /* BinaryConverterInternalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F9CAE9222AC2C700FD4BD9 /* BinaryConverterInternalTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,7 @@
 		12F9CAE0222A99FD00FD4BD9 /* ReadableByteStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadableByteStream.swift; sourceTree = "<group>"; };
 		12F9CAE3222A9AC500FD4BD9 /* ReadableByteStreamReferingArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadableByteStreamReferingArray.swift; sourceTree = "<group>"; };
 		12F9CAE6222AA33300FD4BD9 /* ReadableByteStreamReferingData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadableByteStreamReferingData.swift; sourceTree = "<group>"; };
+		12F9CAE9222AC2C700FD4BD9 /* BinaryConverterInternalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryConverterInternalTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				123104F51DB11C780046A01C /* BinaryConverterTests.swift */,
+				12F9CAE9222AC2C700FD4BD9 /* BinaryConverterInternalTests.swift */,
 				123104F71DB11C780046A01C /* Info.plist */,
 			);
 			path = Tests;
@@ -331,6 +335,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12F9CAEC222AC2D400FD4BD9 /* BinaryConverterInternalTests.swift in Sources */,
 				123104F61DB11C780046A01C /* BinaryConverterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -351,6 +356,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12F9CAED222AC2D500FD4BD9 /* BinaryConverterInternalTests.swift in Sources */,
 				123105D71DB1E6200046A01C /* BinaryConverterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
