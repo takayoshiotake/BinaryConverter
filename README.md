@@ -76,7 +76,7 @@ See *BinaryConverterTests.swift* for more details.
 
 ## Adopting State of `BinaryParsable` and `Binarizable` Protocol
 
-I am adopting `BinaryCompatible` protocol to following types:
+We are adopting `BinaryParsable` and `Binarizable` protocol to following types:
 
 - UInt8
 - UInt16
