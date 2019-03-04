@@ -154,12 +154,12 @@ class BinaryConverterTests: XCTestCase {
         
         // id: UInt8, asciiz: [CChar](count: 8)
         let array = [0x01, 0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00] as [UInt8]
-        let values = try! BinaryConverter.parse(binary: array, layout: [("id", BinaryElement(UInt8.self)), ("asciiz", BinaryElement(CChar.self, count: 8))]) // ["id": 1, "asciiz": [65, 83, 67, 73, 73, 0, 0, 0]]
-        print(values)
+        let values = try! BinaryConverter.parse(binary: array, layout: [("id", BinaryElement(UInt8.self)), ("asciiz", BinaryElement(CChar.self, count: 8))])
+        print(values) // ["id": 1, "asciiz": [65, 83, 67, 73, 73, 0, 0, 0]]
         
         
-        print(BinaryConverter.binarize(128 as Int16, byteOrder: .littleEndian))
-        print(BinaryConverter.binarize([0x7fff, 0x0102] as [Int16], byteOrder: .bigEndian))
+        print(BinaryConverter.binarize(128 as Int16, byteOrder: .littleEndian)) // [128, 0]
+        print(BinaryConverter.binarize([0x7fff, 0x0102] as [Int16], byteOrder: .bigEndian)) // [127, 255, 1, 2]
         
         let result = BinaryConverter.binarize([-32768 as Int16, 0x01020304 as UInt32, "ASCII".cString(using: .ascii)!], byteOrder: .bigEndian)
         print(result) // [128, 0, 1, 2, 3, 4, 65, 83, 67, 73, 73, 0]
