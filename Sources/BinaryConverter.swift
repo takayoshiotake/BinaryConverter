@@ -105,20 +105,6 @@ public class BinaryConverter {
         return try parse(binary: referable.makeReadableByteStream(), count: count, byteOrder: byteOrder)
     }
     
-    
-    public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryParsable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
-        var result: [Key : Any] = [:]
-        for (key, type, byteOrder) in layout {
-            result[key] = try type.init(parsing: stream, byteOrder: byteOrder ?? defaultByteOrder)
-        }
-        return result
-    }
-    
-    public class func parse<Key: Hashable>(binary referable: ReadableByteStreamReferable, layout: Array<(Key, BinaryParsable.Type, ByteOrder?)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
-        return try parse(binary: referable.makeReadableByteStream(), layout: layout, defaultByteOrder: defaultByteOrder)
-    }
-    
-    
     public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
         for (key, type, byteOrder) in layout {

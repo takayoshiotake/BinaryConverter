@@ -15,9 +15,9 @@ struct SimpleStructForTest {
 
 extension SimpleStructForTest: Binarizable, BinaryParsable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
-        let layout: [(String, BinaryParsable.Type, ByteOrder?)] = [
-            ("id", UInt8.self, nil),
-            ("count", UInt16.self, nil)]
+        let layout: [(String, BinaryType, ByteOrder?)] = [
+            ("id", BinaryType(UInt8.self), nil),
+            ("count", BinaryType(UInt16.self), nil)]
         let converted = try BinaryConverter.parse(binary: stream, layout: layout, defaultByteOrder: byteOrder)
         self = SimpleStructForTest(id: converted["id"] as! UInt8, count: converted["count"] as! UInt16)
     }
@@ -64,7 +64,7 @@ class BinaryConverterTests: XCTestCase {
         // ui16=.little, ui32=.big
         let values = try! BinaryConverter.parse(
             binary: [0xff, 0x7f, 0x01, 0x02, 0x03, 0x04],
-            layout: [("ui16", UInt16.self, .littleEndian), ("ui32", UInt32.self, nil)],
+            layout: [("ui16", BinaryType(UInt16.self), .littleEndian), ("ui32", BinaryType(UInt32.self), nil)],
             defaultByteOrder: .bigEndian)
         XCTAssert(values["ui16"] is UInt16)
         XCTAssert(values["ui16"] as! UInt16 == 0x7fff)
