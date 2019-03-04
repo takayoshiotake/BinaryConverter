@@ -86,5 +86,5 @@ I am adopting `BinaryCompatible` protocol to following types:
 - Int32
 - CChar
 - Data
-- Array<Binarizable>
-- ArraySlice<Binarizable>
+- Array&lt;Binarizable&gt;
+- ArraySlice&lt;Binarizable&gt;
