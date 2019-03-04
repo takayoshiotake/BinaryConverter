@@ -23,7 +23,7 @@ extension SimpleStructForTest: Binarizable, BinaryPersable {
     }
     
     public func binarize(byteOrder: ByteOrder) -> [UInt8] {
-        return BinaryConverter.binarize(values: [id, count], byteOrder: byteOrder)
+        return BinaryConverter.binarize([id, count], byteOrder: byteOrder)
     }
 }
 
@@ -46,7 +46,7 @@ class BinaryConverterTests: XCTestCase {
     func testConvertingBinaryIntoData() {
         let binary = [0x01, 0x02, 0x03, 0x04, 0xAA, 0x55, 0xFF, 0x00] as [UInt8]
         let result = try! BinaryConverter.parse(binary: binary) as Data
-        XCTAssert(binary == BinaryConverter.binarize(value: result))
+        XCTAssert(binary == BinaryConverter.binarize(result))
     }
     
     func testConvertingFixedArrayIntoValue() {
@@ -97,13 +97,13 @@ class BinaryConverterTests: XCTestCase {
     
     func testConvertingValueIntoLittleEndian() {
         let value = 128 as Int16
-        let result = BinaryConverter.binarize(value: value, byteOrder: .littleEndian)
+        let result = BinaryConverter.binarize(value, byteOrder: .littleEndian)
         XCTAssert(result == [0x80, 0x00])
     }
     
     func testConvertingValuesIntoBigEndian() {
         let values = [0x7fff, 0x0102] as [UInt16]
-        let result = BinaryConverter.binarize(values: values, byteOrder: .bigEndian)
+        let result = BinaryConverter.binarize(values, byteOrder: .bigEndian)
         XCTAssert(result == [0x7f, 0xff, 0x01, 0x02])
     }
     
@@ -117,7 +117,7 @@ class BinaryConverterTests: XCTestCase {
             0x01020304 as UInt32,
             asciiz8
         ] as [Binarizable]
-        let result = BinaryConverter.binarize(values: values, byteOrder: .bigEndian)
+        let result = BinaryConverter.binarize(values, byteOrder: .bigEndian)
         XCTAssert(result == [
             0x00, 0x80,
             0x01, 0x02, 0x03, 0x04,
@@ -127,7 +127,7 @@ class BinaryConverterTests: XCTestCase {
     
     func testConvertingCustomStructIntoBinary() {
         let value = SimpleStructForTest(id: 0x10, count: 8)
-        let binary = BinaryConverter.binarize(value: value, byteOrder: .bigEndian)
+        let binary = BinaryConverter.binarize(value, byteOrder: .bigEndian)
         XCTAssert(binary == [0x10, 0x00, 0x08])
     }
     
@@ -146,10 +146,10 @@ class BinaryConverterTests: XCTestCase {
         print(values)
         
         
-        print(BinaryConverter.binarize(value: 128 as Int16, byteOrder: .littleEndian))
-        print(BinaryConverter.binarize(values: [0x7fff, 0x0102] as [Int16], byteOrder: .bigEndian))
+        print(BinaryConverter.binarize(128 as Int16, byteOrder: .littleEndian))
+        print(BinaryConverter.binarize([0x7fff, 0x0102] as [Int16], byteOrder: .bigEndian))
         
-        let result = BinaryConverter.binarize(values: [-32768 as Int16, 0x01020304 as UInt32, "ASCII".cString(using: .ascii)!], byteOrder: .bigEndian)
+        let result = BinaryConverter.binarize([-32768 as Int16, 0x01020304 as UInt32, "ASCII".cString(using: .ascii)!], byteOrder: .bigEndian)
         print(result) // [128, 0, 1, 2, 3, 4, 65, 83, 67, 73, 73, 0]
     }
 }

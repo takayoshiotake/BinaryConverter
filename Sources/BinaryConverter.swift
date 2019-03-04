@@ -144,11 +144,11 @@ public class BinaryConverter {
     
     // MARK: - Binarizing
     
-    public class func binarize(value: Binarizable, byteOrder: ByteOrder = ByteOrder.hostEndian) -> [UInt8] {
+    public class func binarize(_ value: Binarizable, byteOrder: ByteOrder = ByteOrder.hostEndian) -> [UInt8] {
         return value.binarize(byteOrder: byteOrder)
     }
     
-    public class func binarize(values: [Binarizable], byteOrder: ByteOrder = ByteOrder.hostEndian) -> [UInt8] {
+    public class func binarize(_ values: [Binarizable], byteOrder: ByteOrder = ByteOrder.hostEndian) -> [UInt8] {
         var binary: [UInt8] = []
         for value in values {
             binary.append(contentsOf: value.binarize(byteOrder: byteOrder))
@@ -156,7 +156,7 @@ public class BinaryConverter {
         return binary
     }
     
-    public class func binarize(values: ArraySlice<Binarizable>, byteOrder: ByteOrder = ByteOrder.hostEndian) -> [UInt8] {
+    public class func binarize(_ values: ArraySlice<Binarizable>, byteOrder: ByteOrder = ByteOrder.hostEndian) -> [UInt8] {
         var binary: [UInt8] = []
         for value in values {
             binary.append(contentsOf: value.binarize(byteOrder: byteOrder))
