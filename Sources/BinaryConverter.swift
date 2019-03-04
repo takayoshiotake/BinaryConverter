@@ -27,16 +27,16 @@ public protocol BinaryParsable {
     init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws
 }
 
-public enum BinaryType {
-    case type(type: BinaryParsable.Type)
-    case fixedCountArray(type: BinaryParsable.Type, count: Int)
+public enum BinaryElement {
+    case value(type: BinaryParsable.Type, byteOrder: ByteOrder?)
+    case array(type: BinaryParsable.Type, count: Int, byteOrder: ByteOrder?)
     
-    public init(_ type: BinaryParsable.Type) {
-        self = .type(type: type)
+    public init(_ type: BinaryParsable.Type, byteOrder: ByteOrder? = nil) {
+        self = .value(type: type, byteOrder: byteOrder)
     }
     
-    public init(_ type: BinaryParsable.Type, count: Int) {
-        self = .fixedCountArray(type: type, count: count)
+    public init(_ type: BinaryParsable.Type, count: Int, byteOrder: ByteOrder? = nil) {
+        self = .array(type: type, count: count, byteOrder: byteOrder)
     }
 }
 
@@ -105,14 +105,14 @@ public class BinaryConverter {
         return try parse(binary: referable.makeReadableByteStream(), count: count, byteOrder: byteOrder)
     }
     
-    public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
+    public class func parse<Key: Hashable>(binary stream: ReadableByteStream, layout: Array<(Key, BinaryElement)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
         var result: [Key : Any] = [:]
-        for (key, type, byteOrder) in layout {
+        for (key, type) in layout {
             switch type {
-            case .type(let type):
+            case .value(let type, let byteOrder):
                 result[key] = try type.init(parsing: stream, byteOrder: byteOrder ?? defaultByteOrder)
                 break
-            case .fixedCountArray(let type, let count):
+            case .array(let type, let count, let byteOrder):
                 var array = [] as [Any]
                 for _ in 0..<count {
                     array.append(try type.init(parsing: stream, byteOrder: byteOrder ?? defaultByteOrder))
@@ -124,7 +124,7 @@ public class BinaryConverter {
         return result
     }
     
-    public class func parse<Key: Hashable>(binary refarable: ReadableByteStreamReferable, layout: Array<(Key, BinaryType, ByteOrder?)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
+    public class func parse<Key: Hashable>(binary refarable: ReadableByteStreamReferable, layout: Array<(Key, BinaryElement)>, defaultByteOrder: ByteOrder = ByteOrder.hostEndian) throws -> Dictionary<Key, Any> {
         return try parse(binary: refarable.makeReadableByteStream(), layout: layout, defaultByteOrder: defaultByteOrder)
     }
     

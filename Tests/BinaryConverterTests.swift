@@ -15,10 +15,13 @@ struct SimpleStructForTest {
 
 extension SimpleStructForTest: Binarizable, BinaryParsable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
-        let layout: [(String, BinaryType, ByteOrder?)] = [
-            ("id", BinaryType(UInt8.self), nil),
-            ("count", BinaryType(UInt16.self), nil)]
-        let converted = try BinaryConverter.parse(binary: stream, layout: layout, defaultByteOrder: byteOrder)
+        let converted = try BinaryConverter.parse(
+            binary: stream,
+            layout: [
+                ("id", BinaryElement(UInt8.self)),
+                ("count", BinaryElement(UInt16.self))
+            ],
+            defaultByteOrder: byteOrder)
         self = SimpleStructForTest(id: converted["id"] as! UInt8, count: converted["count"] as! UInt16)
     }
     
@@ -64,7 +67,10 @@ class BinaryConverterTests: XCTestCase {
         // ui16=.little, ui32=.big
         let values = try! BinaryConverter.parse(
             binary: [0xff, 0x7f, 0x01, 0x02, 0x03, 0x04],
-            layout: [("ui16", BinaryType(UInt16.self), .littleEndian), ("ui32", BinaryType(UInt32.self), nil)],
+            layout: [
+                ("ui16", BinaryElement(UInt16.self, byteOrder: .littleEndian)),
+                ("ui32", BinaryElement(UInt32.self))
+            ],
             defaultByteOrder: .bigEndian)
         XCTAssert(values["ui16"] is UInt16)
         XCTAssert(values["ui16"] as! UInt16 == 0x7fff)
@@ -75,7 +81,13 @@ class BinaryConverterTests: XCTestCase {
     func testConvertingBinaryIntoValues2() {
         // id: UInt8, asciiz: [CChar](count: 8)
         let data = Data.init(bytes: [0x01, 0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00])
-        let values = try! BinaryConverter.parse(binary: data, layout: [("id", BinaryType(UInt8.self), nil), ("asciiz", BinaryType(CChar.self, count: 8), nil)])
+        let values = try! BinaryConverter.parse(
+            binary: data,
+            layout: [
+                ("id", BinaryElement(UInt8.self)),
+                ("asciiz", BinaryElement(CChar.self, count: 8))
+            ]
+        )
         XCTAssert(values["id"] is UInt8)
         XCTAssert(values["id"] as! UInt8 == 0x01)
         XCTAssert(values["asciiz"] is [CChar])
@@ -142,7 +154,7 @@ class BinaryConverterTests: XCTestCase {
         
         // id: UInt8, asciiz: [CChar](count: 8)
         let array = [0x01, 0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00] as [UInt8]
-        let values = try! BinaryConverter.parse(binary: array, layout: [("id", BinaryType(UInt8.self), nil), ("asciiz", BinaryType(CChar.self, count: 8), nil)]) // ["id": 1, "asciiz": [65, 83, 67, 73, 73, 0, 0, 0]]
+        let values = try! BinaryConverter.parse(binary: array, layout: [("id", BinaryElement(UInt8.self)), ("asciiz", BinaryElement(CChar.self, count: 8))]) // ["id": 1, "asciiz": [65, 83, 67, 73, 73, 0, 0, 0]]
         print(values)
         
         
