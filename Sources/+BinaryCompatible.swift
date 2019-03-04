@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension UInt8: Binarizable, BinaryPersable {
+extension UInt8: Binarizable, BinaryParsable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
         self = try stream.read()
     }
@@ -19,7 +19,7 @@ extension UInt8: Binarizable, BinaryPersable {
     }
 }
 
-extension UInt16: Binarizable, BinaryPersable {
+extension UInt16: Binarizable, BinaryParsable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
         var buffer = try stream.read(2)
         let value = withUnsafePointer(to: &buffer[0]) {
@@ -52,7 +52,7 @@ extension UInt16: Binarizable, BinaryPersable {
     }
 }
 
-extension UInt32: Binarizable, BinaryPersable {
+extension UInt32: Binarizable, BinaryParsable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
         var buffer = try stream.read(4)
         let value = withUnsafePointer(to: &buffer[0]) {
@@ -89,7 +89,7 @@ extension UInt32: Binarizable, BinaryPersable {
     }
 }
 
-extension Int8: Binarizable, BinaryPersable {
+extension Int8: Binarizable, BinaryParsable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
         self = Int8(bitPattern: try stream.read())
     }
@@ -100,7 +100,7 @@ extension Int8: Binarizable, BinaryPersable {
     }
 }
 
-extension Int16: Binarizable, BinaryPersable {
+extension Int16: Binarizable, BinaryParsable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
         var buffer = try stream.read(2)
         let value = withUnsafePointer(to: &buffer[0]) {
@@ -133,7 +133,7 @@ extension Int16: Binarizable, BinaryPersable {
     }
 }
 
-extension Int32: Binarizable, BinaryPersable {
+extension Int32: Binarizable, BinaryParsable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
         var buffer = try stream.read(4)
         let value = withUnsafePointer(to: &buffer[0]) {
@@ -170,7 +170,7 @@ extension Int32: Binarizable, BinaryPersable {
     }
 }
 
-extension Data: Binarizable, BinaryPersable {
+extension Data: Binarizable, BinaryParsable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
         self = Data(try stream.read(stream.available))
     }

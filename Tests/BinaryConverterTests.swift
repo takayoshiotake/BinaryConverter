@@ -13,9 +13,9 @@ struct SimpleStructForTest {
     let count: UInt16
 }
 
-extension SimpleStructForTest: Binarizable, BinaryPersable {
+extension SimpleStructForTest: Binarizable, BinaryParsable {
     public init(parsing stream: ReadableByteStream, byteOrder: ByteOrder) throws {
-        let layout: [(String, BinaryPersable.Type, ByteOrder?)] = [
+        let layout: [(String, BinaryParsable.Type, ByteOrder?)] = [
             ("id", UInt8.self, nil),
             ("count", UInt16.self, nil)]
         let converted = try BinaryConverter.parse(binary: stream, layout: layout, defaultByteOrder: byteOrder)
